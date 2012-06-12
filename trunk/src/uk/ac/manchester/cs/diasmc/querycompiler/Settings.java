@@ -923,7 +923,7 @@ public class Settings {
 		
 		if (opt.getSet().isSet("qos-file")) {
 			INPUTS_QOS_FILE = opt.getSet().getOption("qos-file").
-					getResultValue(0).toLowerCase();	
+					getResultValue(0);	
 		}
 		if (opt.getSet().isSet("network-topology-file")) {
 			INPUTS_NETWORK_TOPOLOGY_FILE = opt.getSet().
