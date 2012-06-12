@@ -1,0 +1,34 @@
+This file describes the organization of the input directory.
+
+The input contains the following files documented in readme.txt
+SNEEql.ini
+local.ini
+
+All other descriptions of file format should also be found in readme.txt
+types.xml
+units
+cost-parameters
+site resources
+All-intervals1000.xml  -> cost-parameters-min-interval1000.xml
+
+Directory Structure:
+
+Topologies: "Topologies" 
+	*.nss format, *.top format *.xml format
+Naming Conventions:
+	#Number of sites#site-network.nss  Example: 5site-network.nss 
+	or
+	#Number of sites#site-description.nss Example: 5site-edbtPaper.nss
+	 
+Scenarios: NameOfScenario 
+    Building
+    Pipes
+    HillTop
+    Measurements (ex Validation)
+Contains:
+	Queries
+	Schemas
+
+QOS
+	qos files
+

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OperatorMetaData>
+	<Operations>
+		<CopyTuple time="0.1"/>
+		<ApplyPredicate time="0.15"/>
+		<CheckTuple time="0.05"/>
+		<DoCalculation time="0.05"/>
+		<Concatenate time="0.3"/>
+		<CallMethod time="0.1"/>
+		<SignalEvent time="2"/>
+		<AcquireData time="30"/>
+		<ScanTuple time="0.1"/>
+		<TurnOnRadio time="10"/>
+		<TurnOffRadio time="10"/>
+		<RadioSyncWindow time ="0"/>
+		<SendPacket time = "15"/> 
+		<BetweenPackets time = "4"/>
+		<SetAValue time = "0.02"/>
+		<DeliverTuple time = "50"/>  
+	</Operations>
+	<MinimumTimerInterval time = "10"/>	
+</OperatorMetaData>

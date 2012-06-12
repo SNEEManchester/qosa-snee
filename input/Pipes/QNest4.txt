@@ -1,0 +1,6 @@
+
+SELECT RSTREAM AVG(SubIn.pressure), AVG(SubIn.temperature), AVG(SubOut.pressure), AVG(SubOut.temperature)
+FROM 
+   (SELECT * from OutFlow[NOW]) SubOut, 
+   (SELECT InFlow.ID, temperature, pressure from InFlow[AT now - 10 sec]) SubIn
+WHERE SubOut.id = SubIn.id;

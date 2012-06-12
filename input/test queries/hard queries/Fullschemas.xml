@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	
+	<stream name="flow">
+    	<column name="discharge">
+        	<type class ="integer"/>
+         </column>
+         <column name="turbidity">
+         	<type class ="integer"/>
+         </column>
+         <sites>12,15</sites>
+     </stream>
+     <stream name="iron">
+         <column name="ph">
+          	<type class ="integer"/>
+         </column>
+         <column name="conductivity">
+        	<type class ="integer"/>
+         </column>
+         <sites>1,2,4-6</sites>
+     </stream>
+     <stream name="intelligentbuilding">
+         <column name="floor">
+        	<type class ="integer"/>
+         </column>
+         <column name="temp">
+        	<type class ="integer"/>
+         </column>
+         <sites>1,2,4-12</sites>
+     </stream>
+     <stream name="temperature">
+         <column name="floor">
+        	<type class ="integer"/>
+         </column>
+         <column name="val">
+        	<type class ="integer"/>
+         </column>
+         <sites>1,4,6</sites>
+     </stream>
+     <stream name="pressure">
+         <column name="floor">
+        	<type class ="integer"/>
+         </column>
+         <column name="val">
+        	<type class ="integer"/>
+         </column>
+         <sites>2,4,5,6</sites>
+     </stream>
+    <stream name="pressuresites">
+         <column name="pressure">
+        	<type class ="integer"/>
+         </column>
+         <column name="machineNum">
+        	<type class ="integer"/>
+         </column>
+         <sites>1-2,4-10</sites>
+     </stream>
+  	 <stream name="vibrationsites">
+         <column name="vibration">
+         	<type class ="integer"/>
+         </column>
+         <column name="machineNum">
+         	<type class ="integer"/>
+         </column>
+         <sites>8-15</sites>
+     </stream>
+     <table name="goterm" rows="200">
+    	 <column name = "id">
+        	<type class ="integer"/>
+    	 </column>	
+         <column name="name">
+        	<type class ="varchar" length="12"/>
+         </column>
+         <column name="type">
+        	<type class ="varchar" length="255"/>
+         </column>
+         <primary key = "id"/>
+         <sites>3</sites>
+     </table>
+     <table name="person" rows="100">
+         <column name="type">
+        	<type class ="varchar" length="255"/>
+         </column>
+         <column name="lives_in">
+        	<type class ="varchar" length="12"/>
+         </column>
+    	 <column name = "age" >
+        	<type class ="integer"/>
+    	 </column>	
+    	 <column name = "dob">
+    	 	<type class ="date" />
+    	 </column>	
+    	 <primary key = "name"/>
+         <sites>3</sites>
+     </table>
+     <table name="age" rows="10">
+    	 <column name = "dob">
+        	<type class ="date"/>
+    	 </column>	
+         <column name="pension_scheme">
+        	<type class ="varchar" length="12"/>
+         </column>
+         <sites>3</sites>
+     </table>
+</schema>

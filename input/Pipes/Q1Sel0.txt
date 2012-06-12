@@ -1,0 +1,4 @@
+SELECT RSTREAM *
+FROM InFlow[NOW]
+where pressure < 0;
+

@@ -1,0 +1,138 @@
+
+
+Phase 1
+
+    * Changes to be made to Top-level Configuration
+          o To change the naming convention of modules and
+            configuration files used in Tinyos1.x
+                + QueryPlan.nc-->QueryPlanC.nc
+                + QueryPlanC.nc-->QuerPlanAppC.nc
+                + FragXXXC.nc--->FragXP.nc
+            o Components to Replace
+		    o DONE. Main with MainC 
+		    o Replace ADCC component with new DemoSensorC(); DONE.
+			    o Naming Scheme
+				    o F{fragId}n{siteId}Sensor
+		    o To replace Timer with new TimerMilliC();
+		        o Naming Scheme
+				    o AgendaTimer
+		    o GenericComm with new AMSenderC(MessageFrag1) for each message type and node
+		        o Naming Scheme
+				    o F{fragId}n{siteId}AMSender
+		    o GenericComm with new AMRecieverC(MessageFrag1) for each message type and node
+		    o Naming Scheme
+				    o F{fragId}n{siteId}AMReceiver
+            o Rewiring
+		    o QueryPlanC.Boot--> MainC.Boot
+		    o QueryPlanC.Read--> DemosensorC
+		    o QueryPlanC.MilliTimer-->TimerMillC;
+		    o QueryPlanC.AMControl --> ActiveMessageC;
+		    o QueryPlanC.Packet --> AMSenderC;
+		    o QueryPlanC.AMSend --> AMSenderC;
+		    o QueryPlanC.Recieve --> AMRecieverC;
+                
+          o The "init()" and "start/stop()" methods in StdControl have 
+            been separated in TinyOS 2.x. In tinyOS 2.0 we are now calling it
+            Splitcontrol instead of StdControl.The init() method is now
+            part of the "Init" interface. Therefore all modules
+            implementing StdControl should now implement Init also. (DONE)
+          
+
+    * Changes to be made to QueryPlanM.nc
+          o  In TinyOS 1.x, wiring components to the boot sequence
+            would cause them to be powered up and started at boot.
+            That is no longer the case. In Tiny os 2.0: the boot
+            sequence only initializes components. When it has
+            completed initializing the scheduler, hardware, and
+            software, the boot sequence signals the Boot.booted event.
+          o To include booted event() (DONE)
+
+        * In Tiny Os 2.0 "#ifdef TOSSIM" is used to identify blocks of
+          code that should be run only in TOSSIM. To use it for
+          putting synchronization code in (DONE)
+        * Timers methods interfaces renamed in TinyOS 2.0. Must use
+          virtualized one with precise tag. {Will be using StartOneShot()} (DONE)
+
+
+    * Changes to be made to QueryPlan.h (DONE)
+          o Ensure that Message structure includes paltform
+            independent types
+            o Make NULL_EVALTIME an enum
+            o sysTime to be made platform independent
+            o bool synchronizing =True to be made platform independent;
+    * Changes to be made to TX\RX Modules (DONE)
+          o SendMsg and ReceiveMsg interfaces (wherever used or
+            provided by various modules) should be replaced by AMSend
+            and Receive interfaces. At the lowest layer of the
+            communication stack, AMSend and Receive interfaces should
+            be wired to AMSenderC and AMReceiverC.(DONE)
+          o Extra methods have to be added that are part of the AMSend
+            signature. These include the cancel, getPayload and
+            maxPayloadLength methods. (DONE)
+          o In tinyos2.0 the message buffer type is message_t and it
+            is a buffer that is large enough to hold a packet from any
+            of node communication interface. Components cannot
+            reference its fields. (DONE)
+          o In order to get a pointer to the payload of received
+            message_t structures, and to get the payload lengths and
+            maximum payload lengths of message_t structures, the
+            Packet interface is used. This can also be wired to an
+            AMSenderC or AMReceiverC component. (DONE)
+
+          o Packets are now an abstract data type (ADT) in TinyOS 2.x.
+            Therefore, destination addresses from packets can no
+            longer be obtained by using "msg -> addr". Instead the
+            AMPacket.destination() method of the AMPacket interface
+            should be used for this purpose. AMSenderC or AMReceiverC
+            can be used to wire the AMPacket interface. (DONE)
+    * Throughout
+          o The standard TinyOS 1.x return code is result_t, whose
+            value is either SUCCESS (a non-zero value) or FAIL (a zero
+            value). In TinyOS 2.0, result_t is replaced by error_t,
+            whose values include SUCCESS, FAIL, EBUSY, and ECANCEL.
+            Interface commands and events define which error codes
+            they may return and why. (DONE)
+          o To Ensure that module variables includes platform
+            independent types. The nx_bool data type should be
+            replaced by nx_uint8_t apart from other datatypes. (NODT DONE)
+          o All modules implementing StdControl should now implement
+            Init also (DONE)
+          o To include booted event() in all modules implementing
+            stdcontrol interface. (DONE)
+         o
+
+            In TinyOS 2.x, SUCCESS is equal to a zero error code,
+            while other error codes are non-zero. So calls like this
+            should be changed to make sure they test the result for
+            equality with SUCCESS: (DONE)
+
+if (call Packet... () == SUCCESS ) {      //SUCCESS!: do this...
+ }
+              o TOS_LOCAL_ADDRESS no longer exists. There is now a
+            distinction between the local node's ID (which is
+            TOS_NODE_ID) and the active message address. The active
+            message address of a communication interface can be
+            obtained through the AMPacket.localAddress() command. By
+            default, node ID and AM address are the same. (DONE)
+          o dbg messages no longer use one of the debug modes of the
+            form, DBG_* as their first argument. Instead, they should
+            be replaced with strings identifying the sources from
+            where the messages originated. (DONE)
+          o To check Task Posting Rules i.e In TinyOS 1.x, wiring
+            components to the boot sequence would cause them to be
+            powered up and started at boot. That is no longer the
+            case: the boot sequence only initializes components. When
+            it has completed initializing the scheduler, hardware, and
+            software, the boot sequence signals the Boot.booted event. (DONE)
+          o 
+
+Phase II
+
+    * Parameterized get tuple and Put tuples interfaces
+    * To produce virtualize operators and fragment components : Rather
+      than wire to a component with a parameterized interface, a
+      program instantiates a service component that provides the
+      needed interface. This service component does all of the wiring
+      underneath (e.g., in the case of timers, to a unique)
+      automatically, reducing wiring mistakes and simplifying use of
+      the abstraction. 

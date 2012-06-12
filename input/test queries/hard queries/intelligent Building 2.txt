@@ -1,0 +1,12 @@
+SELECT  RSTREAM time, floor1.avgtemp, floor2.avgtemp
+FROM    (SELECT RSTREAM time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding [NEW]
+    WHERE floor=1) [NOW] floor1,
+    (SELECT RSTREAM time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding NEW
+    WHERE floor=2) NOW floor2
+WHERE
+    floor1.time = floor2.time;
+    
+ CB: time in select changed from floor.time to just time 
+ CB: this makes time the evaluation time so there is no issue about missing group by    

@@ -1,0 +1,5 @@
+SELECT RSTREAM id, MAX(ph)
+FROM iron[RANGE 1 minutes SLIDE 15 seconds]
+GROUP BY id;
+(Issue group by - do we handle this now?)
+

@@ -1,0 +1,360 @@
+\section{Translation rules into executable operators}
+\label{sec_translating}
+\texttt{Gives formal rules for translating from the query language to actual operators.
+Includes specific rule of when to use the  relational, windowed or stream versions of each operators.}
+
+\texttt{Again the rules be presented as formal equations here with the corresponding Haskell code left for the Appendix.}
+
+\section{Translating a \SNEEql Query}
+\subsection{Translating a Query}
+\label{sec_wholeQueryTranslation}
+
+This sections introduces the rules for converting an AST into a series of algebraic operators expressed in Haskell notation.
+
+The translation rules do not include any optimisation as these will not affect the semantics of the query language.
+Therefore \sem{CrossProduct} and \sem{Select} operators are used instead of \sem{Join}. 
+No attempt is made to push down \sem{Select} and \sem{Project} operators.
+Queries without a WHERE clause will have an implied predicate of \syn{TRUE} and therefore a \sem{SELECT} operator with \syn{TRUE} as its parameter.
+ 
+\subsubsection{Translation Rules Format}
+\newcounter{equation2}
+\setcounter{equation2}{\value{equation}}
+\setcounter{equation}{-1}
+
+The rules for Translation are expressed in the same format as the typing rules (see Section \ref{sec_TypingRulesFormat}).
+For example one of the rules for typing a \syn{Query} is:
+
+\Rule{
+$\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  \_ ))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelProject [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (RelSelect $\epsilon_3$ $\alpha$)}}
+}{rule_Ex2}
+
+Translation of an AST element into an algebra element is represented as \tranof{$\epsilon$}{$\alpha$}, where $\alpha$ represents an algebraic operator. The font \sem{Operator} is used for Haskell constructors of operators. 
+
+As the above example shows the translation rules make use of the conclusion of the typing rules, so conclusions made there and validity checks are not repeated unless specifically required.
+
+\setcounter{equation}{\value{equation2}}
+%\input{SNEEqlTypes.lhs}
+
+\subsubsection{Translating a FullQuery}
+Rule \ref{rule_TranslateFullQuery} says that the translation of a \syn{FullQuery} is a \sem{Deliver} operator over the output of translating the query $\epsilon_1$. 
+
+\Rule{
+$\epsilon$ = \syn{(FullQuery ($\epsilon_1$))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{(\sem{Deliver} $\alpha$)}
+}{rule_TranslateFullQuery}
+
+Translating a \syn{Query} starts by typing the \syn{ExtentList} $\epsilon_2$.
+This helps determines which translation rule to use and therefore which \sem{Project} and \sem{Select} operators to use.
+The \syn{ExtentList} is then translated with the result becoming the input for the \sem{Select} operators.
+The \sem{Select} operator takes the \syn{BooleanExpression} $\epsilon_3$ as its parameter. 
+
+This \sem{Select} operator is then itself the input for a \sem{Project} or \sem{Aggregation} operator which takes the \syn{Expression} $\epsilon_1$ as its additional parameter. 
+
+\subsubsection{Translating a Relational Query}
+
+The traditional relational \syn{Query} where the type of the \syn{ExtentList} $\epsilon_2$ is of bag of tuples will use the Relational operators \sem{RelSelect} and \sem{RelProject}.
+
+\Rule{
+$\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  \_ ))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelProject [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (RelSelect $\epsilon_3$ $\alpha$)}}
+}{rule_TranslateRelation}
+
+The relational \syn{AggrgeationQuery} where the type of the \syn{ExtentList} $\epsilon_2$ is of bag of tuples and where the SELECT clause includes aggregation, uses the Relational operators \sem{RelSelect} and \sem{RelAggregation}.
+
+\Rule{  
+$\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Aggregation ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Aggregation ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelAggregation [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (RelSelect $\epsilon_3$ $\alpha$)}}
+}{rule_TranslateRelationAggregation}
+
+\subsubsection{Translating a Window-Stream Query}
+
+A \syn{Query} where the type of the \syn{ExtentList} $\epsilon_2$ is windows ({\streamof{\tupleof{int, \bagof{\tupleof{\_}}}}}) will use the window operators \sem{WinSelect} and \sem{WinProject}.
+
+\Rule{
+$\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinProject [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (WinSelect $\epsilon_3$ $\alpha$)}}
+}{rule_TranslateWindow}
+
+A \syn{AggregationQuery} where the type of the \syn{ExtentList}$\epsilon_2$ is windows ({\streamof{\tupleof{int, \bagof{\tupleof{\_}}}}}),and where the SELECT clause includes aggregation, will use the window operators \sem{WinSelect} and \sem{WinAggregation}.
+
+\Rule{
+$\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Aggregation ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Aggregation ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinAggregation [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (WinSelect $\epsilon_3$ $\alpha_3$)}}
+}{rule_TranslateWindowAggregation}
+
+\subsubsection{Translating a Group By Query}
+Rule \ref{rule_TranslateGroupByRelation} shows that translation of a relational \syn{GroupByQuery} begins the same as a normal query with translation of the \syn{ExtentList} $\epsilon_2$ and the addition of a \sem{RelSelect} operator based on the WHERE \syn{BooleanExpression} $\epsilon_3$.
+However then a \sem{RelGrSelect} operator is added with the \syn{Attribute}s from the \syn{GroupByList} $\epsilon_5$.
+This is followed by a \sem{RelGrSelect} based on the \syn{BooleanExpression} $\epsilon_5$ from the HAVING clause.
+Similar to the WHERE clause this would be \syn{TRUE} if there is no HAVING clause.
+Finally instead of a project or aggregation operator there is a \sem{RelUngroup} operator which forms the requested output tuples.
+
+\Rule{
+$\epsilon$ = \syn{(GroupByQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$ $\epsilon_4$ $\epsilon_5$ \_ ))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+\\ $\epsilon_4$ = \syn{(GroupByList ([$\epsilon^g_1$, \mdots, $\epsilon^g_n$]))}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelUngroup [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (RelGrSelect $\epsilon_5$ 
+\\(RelGroupBy [$\epsilon^g_1$, \mdots, $\epsilon^g_n$] (RelSelect $\epsilon_3$ $\alpha$)))}}
+}{rule_TranslateGroupByRelation}
+
+Rule \ref{rule_TranslateGroupByWindow} which translates a \syn{GroupByQuery} with windows is similar to Rule \ref{rule_TranslateGroupByRelation} accept that the \syn{ExtentList} types to windows and the window version of all the operators is used.
+
+\Rule{
+$\epsilon$ = \syn{(GroupByQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$ $\epsilon_4$ $\epsilon_5$ \_ ))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+\\ $\epsilon_4$ = \syn{(GroupByList ([$\epsilon^g_1$, \mdots, $\epsilon^g_n$]))}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinUngroup [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (WinGrSelect $\epsilon_5$ 
+\\(WinGroupBy [$\epsilon^g_1$, \mdots, $\epsilon^g_n$] (WinSelect $\epsilon_3$ $\alpha$)))}}
+}{rule_TranslateGroupByWindow}
+
+\subsubsection{Translating Tuple-Stream Queries}
+
+A \syn{Query} where the type of the \syn{ExtentList} $\epsilon_2$ is tuple stream ({\streamof{\tupleof{int, int, \tupleof{\_}}}}) will use the stream operators \sem{StrSelect} and \sem{StrProject}.
+
+\Rule{
+$\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{\_\ }}}},
+\\ \environment' $\ni$ \tranof{$\epsilon_2$}{$\alpha$},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{StreamProject [$\epsilon'_1$, \mdots, $\epsilon'_n$] [$\epsilon''_1$, \mdots, $\epsilon''_1$] (StreamSelect $\epsilon_3$ $\alpha_3$)}}
+}{rule_TranslatedStream}
+
+\subsubsection{Typing DStream, IStream, RStream Queries}
+
+The translation rules for \syn{DStream}, \syn{IStream} and \syn{RStream} translate the inner query $\epsilon_1$ and use the resulting operator $\alpha_1$ as input for a \sem{DStreamOp}, \sem{IStreamOp} or \sem{RStreamOp} respectively.
+
+\Rule{$\epsilon$ = \syn{(DStream ($\epsilon_1$))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{DStreamOp} ($\alpha_1$)}
+}{rule_TranslateDStream}
+
+\Rule{$\epsilon$ = \syn{(IStream ($\epsilon_1$))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{IStreamOp} ($\alpha_1$)}
+}{rule_TranslateIStream}
+
+\Rule{$\epsilon$ = \syn{(RStream ($\epsilon_1$))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RStreamOp} ($\alpha_1$)}
+}{rule_TranslateRStream}
+
+\subsection{Translating the Extents in a Query}
+\label{sec_extentListTraanslate}
+
+Translating an \syn{ExtentList} consists of first translating the individual \syn{Extent}s and then where applicable combining then into \sem{CrossProduct} operators.
+
+\subsubsection{Translating an Extent}
+The Translation of an \syn{Extent} depends on the \syn{DeclExt} declaration made of the \syn{ExtentName} $\epsilon_1$. 
+ 
+Stored Relations declared with \syn{StoredToken} will be access with a \sem{OneOffScan} operator.
+
+\Rule{
+$\epsilon$ = \syn{(Extent ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_1$ StoredToken \_\ ))}, 
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{OneOffScan} ($\epsilon_1$ $\epsilon_2$)}
+}{rule_TranslateStored}
+
+Stream of tuples declared with \syn{PushedToken} will be received by a \sem{StrReceive} operator.
+
+\Rule{
+$\epsilon$ = \syn{(Extent ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_1$ PushedToken \_\ ))}, 
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{StrReceive} ($\epsilon_1$ $\epsilon_2$)}
+}{rule_TranslatePushed}
+
+Sensor data declared with \syn{SensedToken} will be acquired with a \sem{StrAcquire} operator.
+The logical version of \sem{StrAcquire} does not included the acquisition rate an sites parameters that the distributed physical versions will have. 
+
+\Rule{
+$\epsilon$ = \syn{(Extent ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_1$ SensedToken \_\ ))}, 
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{StrAcquire} ($\epsilon_1$ $\epsilon_2$)}
+}{rule_TranslateSensed}
+              
+The translation rule for \syn{WindowedExtent} with a \syn{TimeWindowDef} (rule \ref{rule_TranslateTimeWindow}) translates the inner extent $\epsilon_1$ and uses that as input operator  for a \sem{TimeWindow} with the extra parameters of the windowScope $\epsilon_2$ (from and to values) the slide $\epsilon_3$ in Ticks.         
+
+\Rule{
+$\epsilon$ = \syn{(WindowedExtent ($\epsilon_1$ (TimeWindowDef $\epsilon_2$ $\epsilon_3$)))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{TimeWindow} ($\epsilon_2$ $\epsilon_3$ $\alpha$)}
+}{rule_TranslateTimeWindow}
+
+The translation rule for \syn{WindowedExtent} with a \syn{RowWindowDef} (rule \ref{rule_TranslateRowWindow}) translates the inner extent $\epsilon_1$ and uses that as input operator  for a \sem{RowWindow} with the extra parameters of the windowScope $\epsilon_2$ (from and to values) the slide $\epsilon_3$ as an Int Index.         
+\Rule{
+$\epsilon$ = \syn{(WindowedExtent ($\epsilon_1$ (RowWindowDef $\epsilon_2$ $\epsilon_3$)))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RowWindow} ($\epsilon_2$ $\epsilon_3$ $\alpha$)}
+}{rule_TranslateRowWindow}
+
+The translation rule for \syn{WindowedExtent} with a \syn{InputWindowDef} (rule \ref{rule_TranslateInputWindow}) translates the inner extent $\epsilon_1$ and uses that as input operator  for a \sem{InputWindow} with the extra parameters of the windowScope $\epsilon_2$ (from and to values).
+
+Neither \syn{InputWindowDef} nor \sem{InputWindow} include a slide.
+\Rule{
+$\epsilon$ = \syn{(WindowedExtent ($\epsilon_1$ (InputWindowDef $\epsilon_2$)))},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{InputWindow} ($\epsilon_2$ $\alpha$)}
+}{rule_TranslateInputWindow}
+
+The rules for Translation of a \syn{SubQuery} first type the inner query $\epsilon_1$.
+The type returned determines which rule and therefore which \sem{Rename} operator will used.
+The inner query $\epsilon_1$ is then translated $\alpha$ with this being used as the input to a \sem{Rename} operator with the \syn{LocalName} $\epsilon_3$ as an additional parameter.
+
+\syn{SubQuery} where the type of the inner query $\epsilon_1$ is of bag of tuples will use the Relational rename operator \sem{RelRename}.
+
+\Rule{
+$\epsilon$ = \syn{(Subquery ($\epsilon_1$ \_ $\epsilon_3$))},
+\\  \environment $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelRename} $\epsilon_3$ $\alpha$}
+}{rule_TranslateRelSubQuery}
+
+\syn{SubQuery} where the type of the inner query $\epsilon_1$ is windows ({\streamof{\tupleof{int, \bagof{\tupleof{\_}}}}}) will use the window rename operator \sem{WinRename}.
+
+\Rule{
+$\epsilon$ = \syn{(Subquery ($\epsilon_1$ \_ $\epsilon_3$))},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinRename} $\epsilon_3$ $\alpha$}
+}{rule_TranslateWinSubQuery}
+
+\syn{SubQuery} where the type of the inner query $\epsilon_1$ is tuple stream ({\streamof{\tupleof{int, int, \tupleof{\_}}}}) will use the stream rename operator \sem{StrRename}.
+
+\Rule{
+$\epsilon$ = \syn{(Subquery ($\epsilon_1$ \_ $\epsilon_3$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{\_\ }}}},
+\\ \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{StrRename} $\epsilon_3$ $\alpha$}
+}{rule_TranslateStrSubQuery}
+
+\subsubsection{Queries with a single Extent}
+
+Rule \ref{rule_SingleExtent} says that when there is only one \syn{ExtentInstruction} in the FROM clause then the operator for that extent is the operator for the whole \syn{ExtentList}
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$])},
+\environment $\ni$ \tranof{$\epsilon$}{$\alpha_1$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{$\alpha_1$}
+}{rule_SingleExtent}
+
+\subsubsection{Product of Relations}
+
+Rule \ref{rule_ProdRelTranslation} states that an \syn{ExtentList}, where all
+extents are of collection type relation, will use nested relational cross product operators \sem{RelCrossProduct}.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  $\tau_1$ = \typ{\bagof{\tupleof{\_}}},
+\\  $\vdots$
+\\  $\tau_n$ = \typ{\bagof{\tupleof{\_}}},
+\\  \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}, \mdots, \environment $\ni$ \tranof{$\epsilon_n$}{$\alpha_n$},
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{RelCrossProduct} ($\alpha_1$ \mdots (\sem{RelCrossProduct} ($\alpha_{(n-1)}$ $\alpha_n$)))}
+}{rule_ProdRelTranslation}
+
+\subsubsection{Product of Window Streams}
+
+Rule \ref{rule_ProdWinType} states that an \syn{ExtentList}, where all
+extents are of collection type window-stream,  will use nested window cross product operators \sem{WinCrossProduct}.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$}
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\  $\vdots$
+\\  $\tau_n$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\  \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}, \mdots, \environment $\ni$ \tranof{$\epsilon_n$}{$\alpha_1$}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinCrossProduct} ($\alpha_1$ \mdots (\sem{WinCrossProduct} ($\alpha_{(n-1)}$ $\alpha_n$)))}
+}{rule_ProdWinTranslation}
+
+\subsubsection{Product of Multiple Relations and a Stream}
+
+Rule \ref{rule_TranslateProdRelStream} applies to \syn{ExtentList},
+where all extents but one have collection type relation with the last
+being of collection type tuple-stream.
+All operators except the last ($\alpha_1$ to $\alpha_{(n-1)}$) are combined using nested relational cross product operators \sem{RelCrossProduct}.
+The result is combined with the stream operator $\alpha_n$ using the mixed cross product operator \sem{StrRelCrossProduct}.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$}
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{\_}}}},
+\\  $\tau_2$ = \typ{\bagof{\tupleof{\_}}},
+\\  $\vdots$
+\\  $\tau_{n}$ = \typ{\bagof{\tupleof{\_}}},
+\\  \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}, \mdots, \environment $\ni$ \tranof{$\epsilon_n$}{$\alpha_n$},
+\\ $\alpha'_1$ = {\sem{RelCrossProduct} ($\alpha_2$ \mdots (\sem{RelCrossProduct} ($\alpha_{(n-1)}$ $\alpha_n$)))}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{StrRelCrossProduct} ($\alpha_1$ $\alpha'_1$)}
+}{rule_TranslateProdRelStream}
+
+\subsubsection{Product of Multiple Relations and Window-Streams}
+
+Rule \ref{rule_TranslateProdRelStream} applies to \syn{ExtentList},
+where some extents are of collection type relation and the rest are of collection
+type window-stream.
+The relational operators ($\alpha_1$ to $\alpha_n$) are combined using nested relational cross product operators \sem{RelCrossProduct} ($\alpha'_1$)
+The window operators ($\alpha_{(n+1)}$ to $\alpha_{(n+m)}$) are combined using nested window cross product operators \sem{WinCrossProduct} ($\alpha'_1$)
+The result of the above two are combined the mixed cross product operator \sem{WinRelCrossProduct}.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\  $\vdots$
+\\  $\tau_{n}$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{\_}}}}},
+\\  $\tau_{n+1}$ = \typ{\bagof{\tupleof{\_}}},
+\\  $\vdots$
+\\  $\tau_{n+m}$ = \typ{\typ{int}, \bagof{\tupleof{\_}}},
+\\  \environment $\ni$ \tranof{$\epsilon_1$}{$\alpha_1$}, \mdots, \environment $\ni$ \tranof{$\epsilon_{n+m}$}{$\alpha_{n+m}$},
+\\ $\alpha'_1$ = {\sem{WinCrossProduct} ($\alpha_1$ \mdots (\sem{WinCrossProduct} ($\alpha_{n-1}$ $\alpha_{n}$)))},
+\\ $\alpha'_2$ = {\sem{RelCrossProduct} ($alpha_{n+1}$ \mdots (\sem{RelCrossProduct} ($\alpha_{{n+m-1}}$ $\alpha_{n+m}$)))}
+}{
+\environment $\ni$ \tranof{$\epsilon$}{\sem{WinRelCrossProduct} ($\alpha'_1$ $\alpha'_2$)}
+}{rule_TranslateProdRelWin}
+
+\section{Semantics in Haskell Only}
+\input{SNEEqlEvaluate.lhs}

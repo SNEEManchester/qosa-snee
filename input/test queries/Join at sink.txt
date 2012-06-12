@@ -1,0 +1,2 @@
+SELECT RSTREAM f.time, f.id, f.discharge, i.id, i.ph 
+FROM iron[NOW] i, flow [NOW] f;

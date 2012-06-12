@@ -1,0 +1,2 @@
+SELECT id as ignore1, time as ignore2, press as ignore3
+FROM Inflow;

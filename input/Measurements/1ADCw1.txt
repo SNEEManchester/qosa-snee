@@ -1,0 +1,4 @@
+SELECT press as agnore1, press as ignore2, press as ignore3
+FROM Inflow;
+
+

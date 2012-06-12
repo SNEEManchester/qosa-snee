@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<qos-specification
+xmlns="http://dias-mc.cs.manchester.ac.uk"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk qos-specification.xsd">
+
+	<expectations>
+
+		<optimization-goal>
+			<type>MINIMIZE</type>
+			<variable>ACQUISITION_INTERVAL</variable>
+			<weighting>1</weighting>
+		</optimization-goal>
+
+		<acquisition-interval>
+			<units>SECONDS</units>
+			<constraint>
+				<range>	
+					<min-val>5</min-val>
+					<max-val>10</max-val>					
+				</range>	
+			</constraint>
+			<weighting>1</weighting>
+		</acquisition-interval>	
+		
+		<delivery-time>
+			<units>SECONDS</units>
+			<constraint>
+				<less-equals>60</less-equals>
+			</constraint>
+			<weighting>2</weighting>
+		</delivery-time>
+	
+		<total-energy>
+			<units>JOULES</units>
+			<constraint>
+				<less-equals>1000000000</less-equals>
+			</constraint>
+			<weighting>4</weighting>
+		</total-energy>
+		
+		<lifetime>
+			<units>MINUTES</units>
+			<constraint>
+				<greater-equals>10</greater-equals>
+			</constraint>
+			<weighting>4</weighting>
+		</lifetime>
+	</expectations>
+	
+	<query-duration>
+		<units>SECONDS</units>
+		<equals>60</equals>
+	</query-duration>
+			
+</qos-specification>	
+

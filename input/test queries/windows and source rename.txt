@@ -1,0 +1,4 @@
+select RSTREAM i.id, f.time
+from iron range 10 seconds i, flow  rows 4 f
+where i.id > 5 and i.id = f.id and turbidity > 23 and ph < 23;
+

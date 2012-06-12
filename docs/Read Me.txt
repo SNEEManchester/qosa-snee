@@ -1,0 +1,867 @@
+Table of Contents
+=================
+
+1. INTRODUCTION AND LEGAL STUFF
+        a. Purpose of this document
+        b. Legal stuff
+
+2. SETTING UP THE DEVELOPMENT ENVIRONMENT
+        a. Installation of Java
+        b. Jar file(s)
+        c. GraphViz installation
+        d. Source code repository
+        e. Linking to repository
+        f. Downloading Eclipse
+        g. Creating the Eclipse project
+        h. Policy on committing to the repository (i.e., only runnable code)
+        i. GnuPlot
+        j. WinHugs
+        k. GhostScript
+        l. Local Ini file
+
+3. RUNNING THE QUERY OPTIMIZER
+        a. Ini file
+        b. Running the compiler
+        c. Configuring the query compiler
+        d. Queries
+        e. QoS data       
+		f. Network_topology_file
+		g. schema_file 
+        h. operator_metadata_file 
+        i. types_file 
+        j. Outputs of the query optimizer
+
+4. NESC CODE GENERATION
+        a. Outputs of nesC code generation
+        b. Compilation of nesC code
+        c. Running nesC code
+
+5. RUNNING EXPERIMENTS WITH TINYDB AND POWERTOSSIM
+        a. Uninstallation of TinyOS
+        b. Uninstallation of Cygwin
+        c. Installation of TinyOS
+        d. Configuration of TinyViz
+        e. Setting up TinyDB
+        f. Running PowerTossim without counting CPU cycles
+        g. Running PowerTossim with counting CPU cycles enabled
+        h. How to Manually change PowerTossim source to count CPU cycles in Cygwin
+        i. Using the PowerTossim tinyviz plugin
+        h. Installation of TinyOS 2.0
+
+
+1. INTRODUCTION AND LEGAL STUFF
+===============================
+
+	a. Purpose of this document
+
+This document is intended for internal and especially someone new to some or all aspects of this project.
+
+	b. Legal stuff
+
+**IG: we need to discuss with Alvaro exactly what needs to go here, and we'll probably need to place this at the beginning of
+each file in the source code**
+The software, ideas involved and this document are copyrighted by the University of Manchester.
+
+The software and this document was written for internal use only so may not be consider fit for purpose for use outside of the University of Manchester
+Anyone doing so does so entirely at their own risk.
+
+
+2. SETTING UP THE DEVELOPMENT ENVIRONMENT
+=========================================
+    
+		a. Installation of Java
+        
+The complier and optimizer are written in Java and require at least the SE (Standard Edition) Java JDK version 1.5. (Also know as JDK 5)
+The 1.5 is required because of the heavy use of templates.
+
+The Java appears to run against Java 1.6 (JDK 6). However the internal agreement is not to use any 1.6 (JDK 6) features.
+
+Christian is running the project against 1.6 for testing purpose. Please let him know if he inadvertently uses any 1.6 only features. He will let other project members know if features are used that no longer work for 1.6.
+
+See http://java.sun.com/ for more information and downloads.
+
+
+        b. Jar file(s)
+        
+The tool relies on the following jar file.
+Antlr (ANother Tool for Language Recognition)
+See: http://www.antlr.org/
+We use Antlr-2.7.5.jar as it was the latest version available with a windows executable at the time of writing.
+
+All other jars are part of the standard JDK.
+
+==IG to improve
+        c.  GraphViz Installation
+        
+The drawing of the query plan trees requires Graphviz.
+Regrettably not all versions of the Graphviz provide the correct result.
+Ixent is still investigating which is the correct version to get and how to get it.
+
+For now the minimum files required have been added to the repository under the GraphViz folder
+
+We suggest copying the whiole GrpahViz folder into a Program Files\ATT folder.
+-(Alternatively edit the SNEEql.ini file to point to the graphviz folder.
+
+        d. Source code repository
+        
+We use subversion to pass the latest build to other members of the project.
+See: http://subversion.tigris.org/ for more information
+
+The client we use for downloading the latest files is TortoiseSVN
+http://tortoisesvn.net/
+
+I used the 32 bit installer with success.
+
+There is no known reason not to use the latest version.
+
+
+        e. Linking to repository       
+
+The project can be found at.
+
+http://rpc240.cs.man.ac.uk:3180/svn/SNEEql/
+
+Please contact Christian if you need help setting up a password and user id.
+
+To link a folder in windows explorer to the repository.
+1. Create the folder
+2. Right click folder and select SVN Checkout
+3. Enter http://rpc240.cs.man.ac.uk:3180/svn/SNEEql/ into URL of repository
+    Leave the remaining option and click OK.
+
+        f. Downloading Eclipse
+
+While not required we recommend the use of Eclipse for this project. We know of no reason not to use the latest version of Eclipse.
+
+We use the Eclipse SDK with no additional plugins.  See http://www.eclipse.org/ for information and downloads.
+
+Please do not install the SVN Eclipse plugin. See the policy on committing to the repository.
+
+
+        g. Creating the Eclipse project
+
+File - New - Project
+Java Project - Next
+Provide a project name
+Make sure jre is pointed to a JRE1.5 or later
+
+select create project from existing source
+browse
+in "browse for folder" window find the correct folder 
+click on it and make sure it shows up in the "folder:" textbox shows the correct folder
+Ok
+The selected folder should now be visible in the "directory" text box.
+
+The project should now be created.
+Project properties
+Java build path
+Libraries tab
+Add external jar
+Find and add required jars.
+	See section on jar files
+**IG: You can do this when creating the project, the Java Project Wizard
+
+        h. Policy on committing to the repository 
+
+We have agreed the following project rules for the use of the repository.
+They are intended to facilitate its use for all. Please discuss with the rest of the group before intentionally breaking them.
+
+1. Please add only code that complies correctly. 
+	Comment out code that does not compile. 
+	Alternatively save the work under development under a file name that does not end with java
+2. Please add only code that does not prevent the project from running.
+	Only the QueryCompiler.java main method is required to run. 
+		This includes all methods called by QueryCompiler.java main 
+	All other main methods and are used for testing only so there is no requirement that they run. 
+	Only the previously agreed to queries are required to run.
+	Please comment out any references to methods under development if they would be called by running QueryCompiler.main.
+	Methods only called when a new parameters is used need not run.
+3. When committing, add a comment in the log. Which is useful to other members of the group.
+	Please let all project members know of any changes in behavior caused by new code.
+4. Please try to remember to specifically add in new files as Tortoise does not do so automatically.  You can achieve this by right-clicking 
+on the new file in windows explorer, selecting Tortoise SVN, and then Add.  Then commit as normal.
+5. Please do not add generated files.
+	5a. No class files please
+	5b. No generated graph files please
+	5c. No other log files please
+	5d. No generated Nesc files please
+	5e. No generated javaDoc files please 
+6. Do add any datafile you are testing the system with
+	(Even if currently not being used)
+	6a. Queries 
+	6b. Qos files
+	6c. MetaData files
+	6d. Run scripts
+7. Please only remove files for which you are responsible
+8. Repository may include files under development even if not used.
+9. Please do not use the Eclipse SVN plugin as this could cause updates that break rules 1 and 2.
+10. WARNING. The repository is only a way to communicate and share code between project members. It should not be used as your main file source as it is not on a backed up drive. Keep a backup of your work outside of the repository.
+
+        i. gnuplot
+The script uses gnuplot to generate graphs.
+Note: gnuplot 4.0 will not work.
+Only 4.2 has been tested successfully
+
+gnuplot 4.2 can be downloaded from
+http://www.gnuplot.info/
+
+        j. WinHugs
+        
+The parser and translator has been implemented in Haskell.
+To run this you will need to install winHugs which can be found at            
+http://haskell.org/hugs/
+
+From there you should install the larger "WinHugs, other programs, and a large collection of libraries."
+Not the smaller minhugs.
+
+Code has been tested against the May version but there is no known reason it will not run against the latest version.
+
+        k. GhostScript
+        TO DO
+        
+        l. Local Ini file
+        Save the directory you installed in a file called local.ini 
+        
+   	 Example Local.ini file
+   	 PLEASE do NOT commit local.ini
+
+     [Haskell]
+     #Executable used to run the Haskell translator
+     #Format is the full file path and the fine name.
+     exe = C:/Program Files/WinHugs/runhugs.exe
+
+     [GraphViz]
+     #Location of the GraphViz executables
+     exe = C:/Program Files/ATT/Graphviz/bin/dot.exe
+
+     #Assumed Width of the screen (for displaying graphs)
+     screen_width=1800
+
+     #Assumed height of the screen (for displaying graphs)
+     screen_height=740
+
+     [Latex]
+     #Full path of the latex compiler executable
+     compiler_exe = C:/Program Files/MiKTeX 2.6/miktex/bin/latex.exe
+
+     #Full path of the dvips executable, used to convert dvi to ps
+     dvips_exe = C:/Program Files/MiKTeX 2.6/miktex/bin/dvips.exe
+
+     #Full path of ghostscipt executable, used to convert ps to pdf
+     ghostscript_exe = c:/Program Files/ghostscript/gs8.51/bin/gswin32c.exe
+		
+
+3. RUNNING THE QUERY OPTIMIZER
+==============================  
+
+        a. Ini file
+The complier gets its settings from an ini file, which is read from "data/SNEEql.ini" (this can be changed in Constants.java).  
+The ini file allows configuration of various aspects of the query compiler, including:
+
+* Settings which determine references to directories/files containing metadata, QoS settings, schemas, and test queries (described later in this section).
+* Settings which determine what query plan graphs are displayed, and in what level of detail they are displayed.
+* Settings which affect the behaviour of the query compiler phases
+* Settings which relate to the generation of nesC executable code
+* Settings which to configure GraphViz
+* Settings to configure the logger
+
+Comments describe each setting in the ini file.
+
+        b. Running the Compiler
+The main class is found in         
+uk.ac.manchester.cs.diasmc.querycompiler.QueryCompiler
+
+Any other main classes are for testing purposes only.
+
+        c. Configuring the query compiler
+The main class runs in three different modes depending on the number of parameters used.
+
+0. As described in the ini file.
+
+1. Using a test script
+This allows a test scripts to be created and repeated.
+The parameter is the name and path of the script file
+The format of the script is a repetitive set of three lines
+Line 1 is the query (as found in the query directory set in the ini file)
+Line 2 is the Qos file. (including any directory information)
+Line 3 is the name to be used for all graphs and generated folders
+
+2. With a user supplied query and QoS file.
+This allows a script to call the Java as part of a full test run
+
+== CB to add link to query description
+  
+        d. Queries
+        
+The compiler expects each query to be in a separate text file, in the queries directory specified in the ini file.
+All queries must end with a semicolon. Anything in the file after the semicolon is ignored, and may be used to add comments or notes relating to the query.
+
+A document describing the syntax of the query language is currently being written.
+
+==
+        e. QoS data       
+
+The compiler expects Quality of Service metadata in an XML file specified by the qos_file setting in the ini file.
+The correct format is:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<QoS>
+	<evaluationRate>1000</evaluationRate>
+	<maxBufferingFactor>5</maxBufferingFactor>
+</QoS>
+
+Acquisition rate tag is optional but currently if used must be the same as the evaluation rate.
+
+	<acquisitionRate>1000</acquisitionRate>
+
+Any other items in QoS.xml are there for testing purpose only and are not used by the complier.
+
+== IG to do       
+		f. Network_topology_file
+
+== CB to add link to schema description
+		g. schema_file 
+		
+The schema file lists the information about the sources.
+
+sinks tag is used to set the sink node.
+	Note: All but the first node listed is ignored
+
+Stream tag is used to identify allowed streams.
+	There can be any number of streams as long as each has a unique name
+	There is no requirement that all streams in the schema have to be used.
+	Nor that all attributes in a stream are used
+	
+	All type class values must map to the types metadata.
+
+An example is:	
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<sinks>16</sinks>
+	<stream name="nest">
+    	<column name="temperature">
+        	<type class ="integer"/>
+         </column>
+         <nodes>2,6,13</nodes>
+  </stream>
+</schema>
+
+== CB to add link to cost function description
+		h. operator_metadata_file 
+        
+The operator metadata serves as input for the cost functions.
+
+Unless Constants.TIME_MULTIPLE is set to a value other than 1, all values must be in milliseconds.
+
+Values too large will result in the plan being too long while values too short could cause the next task to start before the preceding one finishes or for data to be lost.
+
+All values must be included and any addition values will be ignored.
+
+The format is:
+<?xml version="1.0" encoding="UTF-8"?>
+<OperatorMetaData>
+	<Operations>
+		<CopyTuple time="0.1"/>
+		<ApplyPredicate time="0.15"/>
+		<CheckTuple time="0.05"/>
+		<CompareTuple time="0.2"/>
+		<DoCalculation time="0.05"/>
+		<Concatenate time="0.3"/>
+		<CallMethod time="0.1"/>
+		<SignalEvent time="2"/>
+		<AcquireData time="30"/>
+		<ScanTuple time="0.1"/>
+		<TurnOnRadio time="10"/>
+		<TurnOffRadio time="5"/>
+		<RadioSyncWindow time ="35"/>
+		<SendPacket time = "5"/>
+		<DeliverTuple time = "0.1"/>
+	</Operations>	
+</OperatorMetaData> 
+
+        i. types_file 
+        
+The types file provides a way to adapt the optimizer for the data types possible and their operators without hard coding this into the code or cluttering the schema file.
+
+Each type has a size in bytes.
+
+Each type has a math level. Options are.
+	 * Level 0 = No operations at all
+	 * Level 1 = Equals within type only
+	 * Level 2 = Comparisons within type only. 
+	 * Level 3 = Standard Functions and Comparisions within type only
+	 * Level 4 = All Functions and Comparisions with type only
+	 * Level 5 = Convertible to a real so full math support
+	 
+The only math level checks done at present are:	 
+No att1 = att2 is possible if either has a math level less than 2
+No att1 = att2 is possible on different types if either has a math level less than 5
+No aggregation such as MAX is allowed on an attribute with math level less than 3
+At present levels 1 and 4 have no extra benefit over levels 0 and 3 respectively.
+
+All types must have a nesCName to be used in nesC generated queries.
+
+The format is:
+<?xml version="1.0" encoding="UTF-8"?>
+<Types>
+	<type name="integer" size="2" math="5" nesCName = "int16_t"/>
+	<type name="time" size="3" math ="3" nesCName = "uint32_t"/>
+</Types>
+
+<!--
+	 * Math level. Describes what operations can be done on this variable.<br>
+	 * Level 0 = No operations at all
+	 * Level 1 = Equals within type only<br>
+	 * Level 2 = Comparisons within type only<br>
+	 * Level 3 = Standard Functions and Comparisions within type only<br>
+	 * Level 4 = All Functions and Comparisions with type only<br>
+	 * Level 5 = Convertible to a real so full math support<br>
+-->
+
+== IG to finish    
+         j. Outputs of the query optimizer
+         
+The code outputs
+1. Log files   
+	Output from the logger commands
+
+2. Graphs
+     The query optimizer outputs query plan graphs (the logical and physical query plans, the routing tree, the agenda) to the folder temp_dir from ini file. (C:\\tmp\\graphs\\ is suggested)
+Subsequently, the nesC generator outputs nesC component configuration graphs for each mote to the same folder.
+
+3. NesC code         
+See NesC CODE GENERATION -Outputs of nesC code generation 
+
+===== IG to do
+4. NESC CODE GENERATION
+=======================
+
+        a. Outputs of nesC code generation  
+        
+The nesC generator generates nesC code to the folder output_dir from the ini file. (c:/tinyos/cygwin/opt/tinyos-1.x/apps/Generated/ is suggested.)
+A subfolder is created  therein for each query, and under each query another subfolder is created for the code pertaining to each mote.  An additional subfolder called tossim is also created which contains the code for all the motes.    
+
+        b. Compilation of nesC code
+        
+The generated code is compiled under Cygwin.  Cd to the folder corresponding to the query and the mote that you want to run.  Then type "make pc" to build an executable with all the tossim libraries incorporated into it.  Ixent has a python script should you wish to do this for many queries/motes at a time.
+
+        c. Running nesC code
+        
+First you need to ensure that the DBG environment variable is set so that you only get the debug messages which are relevant to you.  For example, if you set
+
+declare -x DBG="usr1"
+
+you only get the top-level messages which are printed when a timer to execute a fragment or tx/rx is fired.  "usr2" gives messages when a component invokes a method on another component (e.g., putting tuples in a tray, or when an operator calls requestData/requestDataDone on another operator).  It also displays query results delivered and sensor readings taken.  "usr3" gives messages when a method is invoked from within the same component.  And "usr4" is reserved for your debugging to give low-level debugging information, such as printing out variable values. You can select any combination of the debug messages to appear.  For example
+
+declare -x DBG="usr1,usr2,usr3"
+
+selects the first three categories mentioned.
+
+You can then invoke the executable, for example,
+
+build/pc/main.exe -b=1 -t=120 17 > output.txt
+
+starts a tossim simulation with 17 motes [which is what our current metadata file assumes], for a duration of 120 seconds (the -t parameter), and ensure motes will boot within 1 second.  The results are dumped in the file output.txt.
+
+The -seed setting allow for a fixed randmon seed to be used.
+
+build/pc/main.exe -b=1 -seed=1 -t=120 17 > output.txt
+
+
+5. RUNNING EXPERIMENTS WITH TINYDB AND POWERTOSSIM
+==================================================
+
+The instructions in this section describe the steps that need to be taken set up the experiment environment that we used.  (Please note: some portions of text are copy/pasted from the TinyOS website).
+
+		a. Uninstallation of TinyOS
+        
+Using the Add/Remove programs in the Windows control panel, run Installshield to uninstall Tinyos. 
+
+		b. Uninstallation of Cygwin
+
+Remove the following items to fully uninstall Cygwin:
+i.	Cygwin shortcuts and start menu entry (Programs/Cygwin) 
+ii.	Cygwin registry entries under HKEY_LOCAL_MACHINE\SOFTWARE\Cygnus Solutions\ (run regedit or regedt32 to remove these) 
+iii. 	Delete all the entries to Cygwin or tinyos in the path variable by modifying the Path environment variable under windows
+v.	Delete the directory containing cygwin (i.e. C:/tinyos) directly from windows explorer after saving any required files if any. 
+vi.	Restart the computer
+      
+		c. Installation of TinyOS
+		
+Notes on Installing TinyOS 1.1.14 and Java Communication API
+
+Please note that the instructions given at http://www.tinyos.net/dist-1.1.0/snapshot-1.1.14Jul2005cvs/doc/install-snapshots.html are misleading.
+If you follow them, you will first install TinyOS 1.1.0 and then upgrade. That doesn’t work. 
+
+The steps below have been verified to work:
+
+i.	Uninstall all previous versions of Cygwin as explained above.
+ii.	Go to http://www.tinyos.net/dist-1.1.0/tinyos/windows/, download tinyos-1.1.11-3is.exe (It is the installation version for TinyOS 1.1.11).
+iii. 	Install TinyOS 1.1.11 by executing above downloaded executable file on Windows machine. It contains Cygwin and Java software.
+#TODO: check whether 14 or 15 is needed
+iv.	Go to http://www.tinyos.net/dist-1.1.0/snapshot-1.1.15Dec2005cvs/doc/install-snapshots.html, and download tinyos-1.1.15Dec2005cvs-1.cygwin.noarch.rpm (This is the snapshot to upgrade to TinyOS 1.1.15).
+v.	At the Cygwin prompt, type rpm --force --ignoreos -Uvh tinyos-1.1.15Dec2005cvs-1.cygwin.noarch.rpm" in the directory where you saved the rpm. This will take a while (the tinyos package installation includes compiling the java code). TinyOS is installed in /opt/tinyos-1.x.
+
+Note: Above notes are applicable for installing other TinyOS snapshots, e.g., 1.1.13.
+
+The Java Communication API package contains supports for serial and parallel ports on Windows PCs. You need to install it before you can run Java program on PC which exchange data with the mote attached to it. Below are the steps:
+
+i. 	Go to http://java.sun.com/products/javacomm/downloads/index.html, click 'Download Version 2.0 for Microsoft Windows and Solaris/x86' and download the version for the Windows platform.
+ii. 	Unzip it in a directory so that it creates a sub-directory named 'commapi'.
+iii. 	Go to the directory 'commapi', open 'Readme.html' and select 'Installation Instructions and Platform Specific notes'. Follow the instructions on this page to finish the installation.
+
+Note: You may install more than one version of Java on your machine. Choose the one you are using to finish above operation.
+Note (tricky): Java Communication API package works with JRE, not JDK. If you are using a JDK, please copy the required files into corresponding JRE directory and make sure to use java command in the JRE directory to run your application. For example, you may have a JDK version in C:\Program Files\Java\jdk1.5.0_01, you also have a corresponding JRE in C:\Program Files\Java\jre1.5.0_01. You need to use C:\Program Files\Java\jre1.5.0_01 to finish above installation and use C:\Program Files\Java\jre1.5.0_01\bin\java to run your application.  You need to use C:\Program Files\Java\jre1.5.0_01 to finish above installation and use C:\Program Files\Java\jre1.5.0_01\bin\java to run your application.
+         
+		d. Configuration of TinyViz
+        
+i.	Add '%TOSROOT\opt\tinyos-1.x\tools\java\net\tinyos\sim' to your PATH environment variable.
+
+ii.	Cd to $TOSROOT/tools/java/net/tinyos/sim and enter the following at the Cygwin prompt:
+	$ make
+
+iii. Cd to $TOSROOT/apps/TestTinyViz, and enter the following at the Cygwin prompt:
+	$ make pc
+	$ export DBG=usr1 
+	$ tinyviz -run build/pc/main.exe 30
+
+An alternative to the steps below is to:
+
+	$ cd $TOSROOT/apps/TestTinyViz/
+	$ make pc
+	$ cd $TOSROOT/tools/java/net/tinyos/sim
+ 	$ ./tinyviz -run ../../../../../apps/TestTinyViz/build/pc/main.exe 1 
+
+if errors in Tinyos1.1.7 above
+edit tools/java/net/tinyos/sim/MakeFile add these three new lines and try again. 
+
+	net/tinyos/message/*.class \
+	net/tinyos/message/avrmote/*.class \ # ADD THESE LINES
+	net/tinyos/message/micaz/*.class \ # ADD THESE LINES
+	net/tinyos/message/telos/*.class \ # ADD THESE LINES
+	net/tinyos/message/*.class   
+
+		e. Setting up TinyDB
+
+1.Recompile the pc-side java code by typing 
+
+	$ cd $TOSROOT/tools/java/net/tinyos/tinydb
+	$ make clean
+	$ make -f MakePC
+
+This will rebuild all of the TinyDB source code, ensuring that the messaging classes are configured to talk with the simulator.
+
+2. Compile the nesc mote-side code by typing
+ 
+ 	$ cd $TOSROOT/apps/TinyDBApp directory.
+	$ make -f MakePC pc
+
+3. Set the DBG string variable appropriately; for example 
+
+	$ export DBG=usr1
+
+4.Start the PC binary with n simulated motes by typing
+
+	$ ./build/pc/main.exe n
+	
+in the $TOSROOT/apps/TinyDBApp directory.
+
+5. In a different shell window, start the java GUI in simulator mode by typing 
+
+	$ cd $TOSROOT/tools/java
+	$ java net.tinyos.tinydb.TinyDBMain -sim
+
+You can specify a query as a parameter:
+
+	$ java net.tinyos.tinydb.TinyDBMain -text -sim  -run "SELECT light FROM sensors SAMPLE PERIOD 1024" 
+
+In addition, you can specify an output file for the results:
+
+	$ java net.tinyos.tinydb.TinyDBMain -text -sim  -run "SELECT light FROM sensors SAMPLE PERIOD 1024" > abc.txt
+
+
+        f.  Running PowerTossim without counting CPU cycles
+
+Once you have the code, do the following: 
+1.	Recompile your application: 
+
+	$ make pc 
+	
+2.	make sure the DBG environement variable includes POWER. If you don't need any other debugging messages, this reduces to: 
+
+	$ export DBG=power
+	
+3.	run main.exe with the -p flag and save the output to a file. For example 
+
+	$ ./build/pc/main.exe -t=60 -p 10 > myapp.trace 
+
+	where
+			10 is the number of nodes
+			-t is the duration of the simulation, in seconds
+			-p specifies do power profiling
+			
+4.	run postprocess.py on the resulting trace: 
+
+	$ $TOSROOT/tools/scripts/PowerTOSSIM/postprocess.py --sb=0 --em $TOSROOT/tools/scripts/PowerTOSSIM/mica2_energy_model.txt myapp.trace 
+
+The --sb parameter specifies whether to assume that the motes have a sensor board attached. The --em parameter specifies the energy model. Run postprocess.py --help for details on other options. 
+Using the mica2 radio stack.  By default, TOSSIM uses an old version of the mica radio stack, which does not support power management and tuning transmission power. PowerTOSSIM includes a port of the mica2 radio stack, so it is now possible to run programs that take advantage of the CC1000's power management features. To use it include 
+PFLAGS += -I%T/platform/pc/CC1000Radio 
+in your application Makefile.
+
+Using the TinyViz plugin Power Tossim
+The TinyViz plugin allows you to see the power state of the you application as its running. It is in the main tree, so run 
+$ cd $TOSROOT/tools/jav	a/net/tinyos/sim/plugins 
+$ cvs update
+$ cd $TOSROOT/tools/java/net/tinyos/sim/
+$ make 
+To use the plugin, run the simulation as usual, making sure to include the -p flag and have POWER as part of DBG. For example: 
+$ export DBG=power
+In the application build/pc  directory type
+$ tinyviz -run 'main.exe -p' 5
+
+	g.  Running PowerTossim with counting CPU cycles enabled
+
+If you are running Cygwin, you first need to make some changes to the PowerTossim source code.  Cd to the scripts directory and run:
+
+	$ ./fixPTossim.sh	
+
+Alternatively, the next section outlines how to do this manually, but it's very long-winded.
+
+The following instructions are taken from http://www.eecs.harvard.edu/~shnayder/ptossim/:
+
+Make sure that your makefile is set up to compile mica2 code with debugging (-g). This is very important!!! Add
+
+OPTFLAGS := -g -O0
+
+to the
+
+ifeq ($(PLATFORM), mica2)
+
+section. 
+
+NB: When we tried to compile TinyDB using the -O0 flag, we got the linker error "region text is full".  This error is explained in detail at
+http://m68hc11.serveftp.org/wiki/index.php/FAQ:Link.  We got round this by compiling using the -Os option, which optimizes the code so it has the smallest image size possible.  It sees reasonable because this is what one expects users to do in practice, i.e., muster all the technological cutting-edge that may be available to them.  We therfore use -Os for all our experiments. 
+
+
+	$ cd $TOSROOT/apps/MyApp
+	$ $TOSROOT/tools/scripts/PowerTOSSIM/compile.pl
+... lots of silly warnings here ...  But there shouldn't be any errors.
+	$ cd build/pc
+	$ ./a.out -cpuprof -b=1 -seed=1 -t=60 -p 1
+...
+0: POWER: Mote 0 CPU_CYCLES 5985780.5 at 38191327
+0: POWER: Mote 0 CPU_CYCLES 6059924.0 at 38591427
+0: POWER: Mote 0 CPU_CYCLES 6133961.0 at 38991527
+0: POWER: Mote 0 CPU_CYCLES 6209839.5 at 39391627
+...
+
+	$TOSROOT/tools/scripts/PowerTOSSIM/postprocess.py --sb=0 --em $TOSROOT/tools/scripts/PowerTOSSIM/mica2_energy_model.txt myapp.trace
+
+If you get zero CPU cycle counts, check that the file bb_cycle_map (which maps basic block identifier to the number of cycles it has) is being populated.
+
+
+	h. How to Manually change PowerTossim source to count CPU cycles in Cygwin
+	
+These steps are based on the instructions at http://www2.uic.edu/~tcanli1/cpucyclecountingcode.htm.
+
+
+1. Compiling cil in Cygwin in order to recreate the cilly.asm.exe image (needed for Cygwin)
+========================================================================================
+
+ii. INSTALLATION OF OCAML 3.08 compiler
+
+Download OCaml compiler from http://caml.inria.fr/ocaml/ and download the source tarball for version 3.08.  Put it into a temporary directory, cd to that directory, and and unpack the tarball:
+
+$ gunzip ocaml-3.08.0.tar.gz
+$ tar -xf ocaml-3.08.0.tar
+$ cd ocaml-3.08.0
+
+The compile and install as per the instructions in the INSTALL file:
+$ ./configure
+$ make world
+$ make bootstrap
+$ make opt 
+$ umask 022
+$ make install
+$ make clean
+
+ii. INSTALLATION OF CIL 1.3.4
+
+Download CIL 1.3.4 from http://hal.cs.berkeley.edu/cil/ and put into a temporary directory.
+
+Unpack the tarball:
+$ gunzip cil-1.3.6.tar.gz
+$ tar -xf cil-1.3.6.tar
+$ cd /tmp/cil
+
+Getting CIL to process the output of the nesC compiler requires a small modification to make it recognize '$' as a valid character for identifiers. Namely, you have to modify the following two lines in src/frontc/clexer.mll to add the '$'
+
+let ident = (letter|'_')(letter|decdigit|'_'|'$')* 
+let attribident = (letter|'_')(letter|decdigit|'_'|':'|'$') //I didn't find this line :(
+
+Then you need to make sure that the counter.ml "visitor" module provided with PowerTossim is included.  To do this take the following steps:
+
+	a. Modify the Makefile.cil.in and add the module counter to the 
+	CILLY LIBRARY MODULES variable. The order of the modules matters, you need to add it after formatcil.
+
+	b. Modify maincil.ml so that your new feature descriptor appears at the start of the
+	global list of CIL features:
+
+	let features : C.featureDescr list = 
+	  [ Counter.feature;
+
+	...
+	...
+
+	] 
+	  @ Feature_config.features 
+
+	c. Now compile CIL:
+
+	$ ./configure
+	$ make
+	$ make quicktest
+
+You should now find cilly.asm.exe in a subdirectory of obj/x86_WIN32.  This needs to be copied to $TOSROOT/tools/scripts/PowerTOSSIM/cilly.asm.exe.
+
+
+2. MODIFICATIONS TO PowerTOSSIM SCRIPTS
+=======================================
+
+Modify $TOSROOT/tools/scripts/PowerTOSSIM/fixnames.pl:
+
+Replace the regex /^(\d+)\t([^:]*):(\d+)$/ by adding a dot before the *, i.e., "/^(\d+)\t([^:]*):(\d+)$/"  => "/^(\d+)\t([^:].*):(\d+)$/"
+
+
+Modify $TOSROOT/tools/scripts/PowerTOSSIM/bb2asm.pl:
+
+In the if statement of the block starting while(<OBJDUMP>), add:
+
+elsif (/^C\:\/PROGRA~1\/UCB\/cygwin/){
+	$temp=$_;
+	$temp=~s!C\:/PROGRA~1/UCB/cygwin!!;
+	($cur_file, $cur_line) = split /:/, $temp;
+
+	# Get a canonical name out of this filename
+	unless ($path = realpath($cur_file)) {
+	    warn "realpath '$cur_file' failed: $!\n";
+	    $path = $cur_file;  # just use the current path
+	}
+	$path =~ s|/.*$me/|~/|;  # replace "/blah/blah/blah/username" with "~/"
+	$cur_file = $path;
+    }
+
+
+Modify $TOSROOT/tools/scripts/PowerTOSSIM/compile.pl:
+	
+Replace the line
+	system("make pc") && die "Can't compile base app for pc!\n";
+with
+
+	if ($BASEDIR =~/TinyDBApp$/) {
+		system("make -f MakePC pc") && die "Can't compile base app for pc!\n";  #for TinyDB
+	} else {
+		system("make pc") && die "Can't compile base app for pc!\n";
+	}    
+
+This enables TinyDB to be compiled, as it requires slightly different parameters to most TinyOS applications.	
+	
+== FJ to do       
+        i. Using the PowerTossim TinyViz plugin
+        
+h .Installing Tinyos 2.0
+=======================================
+1-	Follow the instructions on the website http://www.tinyos.net/tinyos-2.x/doc/html/install-tinyos.html
+2-	For installing cygwin goto www.cygwin.com and click on the hyper link setup.exe in the lower section of webpage
+
+How to Resolve Errors after Installing TinyOS 2.0
+===================================================
+Error #1
+========
+By giving command make micaz sim
+
+Error: The procedure entry point basename could not be located in the dynamic link library cygwin1.dll
+Solution:  Install Cygwin RPM (1.2.7b) http://www.tinyos.net/dist-1.2.0/tinyos/windows/
+jabeenf@rpc266 /cygdrive/c/tinyos
+$ rpm -ivh nesc-1.2.7b-1.cygwin.i386.rpm --ignoreos
+Preparing...                ########################################### [100%]
+        package nesc-1.2.8a-1 (which is newer than nesc-1.2.7b-1) is already installed
+jabeenf@rpc266 /cygdrive/c/tinyos
+$ rpm -ivh nesc-1.2.7b-1.cygwin.i386.rpm --force
+Preparing...                ########################################### [100%]
+package nesc-1.2.7b-1 is intended for a cygwin_nt-5.0 operating system
+jabeenf@rpc266 /cygdrive/c/tinyos
+$ rpm -ivh nesc-1.2.7b-1.cygwin.i386.rpm --force --ignoreos
+Preparing...                ########################################### [100%]
+   1:nesc                   ########################################### [100%]
+
+Error #2
+========
+To resolvethe following error set Environment variables
+make micaz sim
+> Makefile:2: cygpath: No such file or directory
+> Makefile:2: -w: No such file or directory
+> Makefile:2: OSROOT/support/make/Makerules: No such file or directory
+> make: *** No rule to make target `OSROOT/support/make/Makerules'.
+
+Tinyos 2.0 Environment variables
+export TOSROOT="/opt/tinyos-2.x"
+export TOSDIR="$TOSROOT/tos"
+export MAKERULES="$TOSROOT/support/make/Makerules"
+export CLASSPATH="C:\tinyos\cygwin\opt\tinyos-2.x\support\sdk\java\tinyos.jar;.”
+export PYTHONPATH="/opt/tinyos-2.x/support/sdk/python/tinyos"
+
+Error #3
+========
+To resolve ERROR 
+If you're using Cygwin and you see the output look like this by gvng command
+make micaz sim
+  ncc -c -shared -fPIC -o build/micaz/sim.o ...	      
+rather than 
+  ncc -c -DUSE_DL_IMPORT -fpic -o build/micaz/sim.o ...
+Solution: Explicitly set the OSTYPE environment variable to be cygwin either in your .bashrc 
+or when you compile. For example, in bash:
+
+$ OSTYPE=cygwin make micaz sim
+	    
+or in tcsh 
+$ setenv OSTYPE cygwin
+$ make micaz sim
+	    
+Note that often this problem occurs in addition to other ones, 
+due to using a nonstandard Cygwin installation. So you might have more problems to track down.
+
+ERROR #4
+========
+You do not have the needed Python support installed
+If when you compile you see lots of errors such as
+"undefined reference to" or "Python.h: No such file or directory" 
+then this might be your problem
+Open sim.extra in C:\tinyos\cygwin\opt\tinyos-2.x\support\make
+Add an entry on a separate line under the PFLAGS entry:
+CFLAGS += -I/{path}
+	    
+where {path} is the path of the directory where Python.h lives. For example, 
+if it is in /opt/python/include, then add CFLAGS += -I/opt/python/include.
+
+The sim.extra file uses two variables to find the library: PYDIR and PYTHON_VERSION.
+It looks for a file named libpython$(PYTHON_VERSION).so. So if you have Python 2.4
+installed, make sure that PYTHON_VERSION is 2.4 (be sure to use no spaces!) and if 
+2.3, make sure it is 2.3.
+Usually the Python library is found in /usr/lib. If it isn't there, then you will
+need to modify the PLATFORM_LIB_FLAGS variable. The -L flag tells gcc in what directories
+to look for libraries. So if libpython2.4.so is in /opt/python/lib, then add 
+-L/opt/python/lib to the PLATFORM_LIB_FLAGS. Note that there are three different versions
+of this variable, depending on what OS you're using. Be sure to modify the correct one
+(or be paranoid and modify all three). 
+
+[taken from: http://www.tinyos.net/tinyos-2.x/doc/html/tutorial/lesson11.html]
+
+Error #5
+========
+Error : Couldn't execute msp430-gcc
+
+Solution: Set path variable to point to msp430\bin dir
+
+	

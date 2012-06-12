@@ -1,0 +1,3 @@
+SELECT iron.id, iron.time, iron.ph, flow.discharge
+FROM iron, flow
+WHERE iron.id = flow.id AND iron.time = flow.time;

@@ -1,0 +1,2 @@
+SELECT RSTREAM avg(pressure)
+FROM InFlow[from now - 100 seconds to now - 10 seconds];

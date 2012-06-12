@@ -1,0 +1,4 @@
+select max(i.ph), max(discharge), flow.time, iron.id
+from iron AS i,iron, flow
+where iron.time = i.time and i.time = flow.time
+and turbidity = 20;

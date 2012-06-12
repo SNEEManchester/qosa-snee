@@ -1,0 +1,4 @@
+SELECT RSTREAM wind.speed, wind.direction
+FROM wind[now];
+
+

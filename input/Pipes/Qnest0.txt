@@ -1,0 +1,5 @@
+select myPres 
+from (
+	SELECT RSTREAM pressure as myPres
+	FROM InFlow[Now]);
+

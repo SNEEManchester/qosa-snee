@@ -1,0 +1,6 @@
+SELECT RSTREAM iron.id, iron.time, iron.ph, flow.discharge
+FROM iron[range 1 ROWS], 
+	 flow[range 1 ROWS]
+WHERE iron.id = flow.id and ph > 10 and discharge< 45;
+
+Note: Will only produce results if both the last iron has ph>10 and the last flow has discharge < 45

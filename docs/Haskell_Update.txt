@@ -1,0 +1,27 @@
+This logs the status of the implementation of the Haskell translator.
+
+May 7: This is still under developemnt and not in the live code.
+See uk.ac.manchester.cs.diasmc.querycompiler.queryplan.testOperators.OperatorFactory
+Currently Haskell code is in a seperate repository at
+http://rpc240.cs.man.ac.uk:3180/svn/Haskell
+Version 186 is stable (I hope) but there is no guarantee that all versions will be.
+Before including Haskell a stable version of the Haskell code will be included in the SNEEql directory.
+
+Three new settings may need to adjusted.
+runhugs_file = C:/Program Files/WinHugs/runhugs.exe
+haskell_main = C:\Haskell\SNEEqlTest.hs
+haskell_decl_file = C:\Haskell\Declarations.txt
+
+May 9: 
+Concept of using Haskell has been offically approved.
+Logical optimization to be done in Haskell
+	-Placing selects as low as possibe
+	-Building a left deep tree.
+	
+Optimizations to be done in Java
+    - Pushing projects down
+    - Combining operators
+    - Removing unrequired operators	
+	
+LocalSettings created to hold directory names.	
+

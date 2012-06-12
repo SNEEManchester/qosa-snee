@@ -1,0 +1,6 @@
+
+SELECT RSTREAM SubOut.time, SubIn.id, SubIn.pressure, SubIn.temperature, SubOut.id, SubOut.pressure, SubOut.temperature
+FROM 
+   (SELECT * from OutFlow[NOW]) SubOut, 
+   (SELECT InFlow.ID, temperature, pressure from InFlow[AT now - 10 sec]) SubIn;
+	

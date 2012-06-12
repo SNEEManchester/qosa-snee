@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+      <sinks>0</sinks>
+      <stream name="river">
+    	<column name="rain">
+        	<type class ="integer"/>
+         </column>
+    	<column name="depth">
+        	<type class ="integer"/>
+         </column>         
+         <sites>5,6,7,9</sites>
+     </stream>
+     <stream name="hilltop">
+         <column name="rain">
+          	<type class ="integer"/>
+         </column>
+         <sites>4</sites>
+     </stream>
+</schema>

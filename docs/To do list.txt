@@ -1,0 +1,83 @@
+
+Priority 1 = pre-ICDE (asap)
+Priority 1.5 = may be pre-ICDE if deemed important enough for experiments
+Priority 2 = post-ICDE
+Priority 3 = Blue sky
+
+To add to documentation
+=======================
+
+1. gnuplot (experiments section)
+1. python scripts to run experiments
+
+Throughout
+==========
+
+1. Use enum instead of ints
+
+Metadata (Christian)
+====================
+
+2. Cost models to enable calculating acquisition rate given lifetime (as TinyDB)
+2. Move network topology information to Metadata
+2. Add an metadata file with information about each node's state, so that a node's memory available is not hard-coded at SensorNetworkNode.java, line 18.
+2. Support for acquistion rates different to evaluation rate
+
+Query Language (Christian)
+==========================
+
+Logical Optimization (Christian)
+================================
+
+2. Build operator tree using addNode addEdge ADT functions – for consistency.
+
+Physical Optimization (Christian)
+=================================
+1.5 Combine Select with Exchange Producer (??? IG: The exchange producer is not part of the physical algebra, are you sure you mean this?)
+1.5 Better size in Joins
+2.0 Handle AS better example joins, select and acquire
+
+Routing (Ixent)
+===============
+
+2. Experiment with routing algorithms which take into account "aggregator nodes" as suggested by Alex and Paolo, 
+not just the source and destination nodes.
+3. Consider routing graphs as well as routing tree (this will impact where and when scheduling though!)
+
+Partitioning (Ixent)
+====================
+
+1.5 More intelligent partitioning of the query plan (consider removing unecessary exchanges).
+
+
+Where Scheduling (Ixent)
+========================
+
+1.5 Fix bug: Placement of a recursive fragment over an attribute sensitive one (e.g., aggr merge over join in query semantics.txt) doesn't always work/
+1.5 Do not always pull down fragments towards the leaf nodes of a routing tree; if a fragment increases the amount of data, we should place them closer to the sink node.
+1.5 Check if there is enough memory for a fragment before placing it on a node; if there isn't, place on parent.
+1.5 Optimization: If there is only one copy of AggrInit, we don't need an AggrMerge.
+
+When Scheduling (Ixent)
+===========================
+
+1.5 Take into account window synchronization for transmission/receive start times in agenda (half at start and half at end)
+1.5 Add wake up/sleep schedule to agenda
+1.5 Add support for overlap between subsequent evaluations of an agenda.
+1.5 Removal of unnecessary exchanges between fragment instances in the same node which do not need to be scheduled separately.
+
+NesC Generation (All)
+=======================
+
+1. Implement Project nesC component
+1.5 Implement Power Management
+1.5 Combine Project with other operators (to be determined)
+1.5 Implement IStream nesC component
+1.5 Allow for more than one sensed attribute to be acquired per stream extent.
+1.5 Consider optimizing synchronization further.  Currently all the nodes wake up for all the tasks in the agenda, we should consider only waking up for tasks specific to the current node.
+2. Consider implementing Optimized operator with merge of aggrInit/aggrMerge
+2. Add support for scan/materialization
+2. Consider how acquire operators will be scheduled when acquisition rate not equal to evaluation rate.  Options are separate fragment, or having output tray>1 on acquire operator.
+2. Add support for subqueries (should not be that hard)
+2. Tuples that are larger than packets 
+2. Remove numbers from generated nesC code, put constants

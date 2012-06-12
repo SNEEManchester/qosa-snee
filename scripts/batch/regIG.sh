@@ -1,0 +1,1 @@
+regTests.py --short --generate-random-network=False --generate-random-schemas=False --schema-file=c:/tmp/output/31Jul2008-14-10-37/Q0/schema0-aqRate35000-bFactor3/schema0.xml --sneeql-network-file=c:/test.xml --avrora-network-file=c:/test.top --acq-rates=90000 --net-num-nodes=100 --do-tossim=false

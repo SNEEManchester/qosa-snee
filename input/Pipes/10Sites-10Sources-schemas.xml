@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	
+      <stream name="InFlow">
+    	<column name="pressure">
+        	<type class ="integer"/>
+         </column>
+         <column name="temperature">
+          	<type class ="integer"/>
+         </column>
+         <column name="light">
+          	<type class ="integer"/>
+         </column>
+         <sites>0,1,2,3,4,5,6,7,8,9</sites>
+     </stream>
+     <stream name="OutFlow">
+         <column name="pressure">
+          	<type class ="integer"/>
+         </column>
+         <column name="temperature">
+          	<type class ="integer"/>
+         </column>
+         <column name="light">
+          	<type class ="integer"/>
+         </column>
+         <sites>0,1,2,3,4,5,6,7,8,9</sites>
+     </stream>
+</schema>

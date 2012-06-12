@@ -1,0 +1,4 @@
+RSTREAM SELECT id as ignore1, time as agnore2, press as agnore3, light as agnore4
+FROM Inflow[RANGE 15 seconds];
+
+

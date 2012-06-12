@@ -1,0 +1,4 @@
+SELECT RSTREAM AVG(ph), MAX(ph), MAX(conductivity), min(conductivity)
+FROM iron[now];
+
+

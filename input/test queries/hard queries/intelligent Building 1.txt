@@ -1,0 +1,27 @@
+SELECT ISTREAM time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding [NEW]
+    WHERE floor=1 GROUP BY time;
+
+SELECT  floor1.time, floor1.avgtemp, floor2.avgtemp
+FROM    (SELECT ISTREAM time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding [NEW]
+    WHERE floor=1 GROUP BY time) [NEW] floor1,
+    (SELECT ISTREAM time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding [NEw]
+    WHERE floor=2 GROUPBY time) [NEW] floor2
+WHERE
+    floor1.time = floor2.time;
+       
+CB: add group by to get it to run.
+(There are no impled windows yet.)
+
+SELECT  floor1.time, floor1.avgtemp, floor2.avgtemp
+FROM    (SELECT time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding 
+    WHERE floor=1 GROUP BY time) floor1,
+    (SELECT time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding
+    WHERE floor=2 GROUPBY time) floor2
+WHERE
+    floor1.time = floor2.time;
+ 

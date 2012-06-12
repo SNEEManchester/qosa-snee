@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+      <stream name="InFlow">
+    	<column name="press">
+        	<type class ="integer"/>
+         </column>
+         <column name="temp">
+          	<type class ="integer"/>
+         </column>
+         <column name="light">
+          	<type class ="integer"/>
+         </column>
+    	<column name="humidity">
+        	<type class ="integer"/>
+         </column>
+         <column name="acidity">
+          	<type class ="integer"/>
+         </column>
+         <column name="voltage">
+          	<type class ="integer"/>
+         </column>
+         <column name="temp2">
+          	<type class ="integer"/>
+         </column>
+         <column name="temp3">
+          	<type class ="integer"/>
+         </column>
+         <column name="temp4">
+          	<type class ="integer"/>
+         </column>
+         <sites>0</sites>
+     </stream>
+     <stream name="OutFlow">
+         <column name="press">
+          	<type class ="integer"/>
+         </column>
+         <column name="temp">
+          	<type class ="integer"/>
+         </column>
+         <column name="light">
+          	<type class ="integer"/>
+         </column>
+         <sites>0</sites>
+     </stream>
+</schema>

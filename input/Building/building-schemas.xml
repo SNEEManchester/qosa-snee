@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+      <sinks>0</sinks>
+      <stream name="rons">
+    	<column name="temp">
+        	<type class ="integer"/>
+         </column>
+    	<column name="light">
+        	<type class ="integer"/>
+         </column>         
+         <sites>1</sites>
+      </stream>
+      <stream name="als">
+    	<column name="temp">
+        	<type class ="integer"/>
+         </column>
+    	<column name="light">
+        	<type class ="integer"/>
+         </column>         
+         <sites>2</sites>
+      </stream>
+      <stream name="rooms">
+    	<column name="temp">
+        	<type class ="integer"/>
+         </column>
+    	<column name="light">
+        	<type class ="integer"/>
+         </column>         
+         <sites>1,2</sites>
+      </stream>
+</schema>

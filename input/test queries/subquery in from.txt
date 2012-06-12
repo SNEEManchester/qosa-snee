@@ -1,0 +1,4 @@
+SELECT RSTREAM i.time, i.id,ph
+FROM iron [NOW] i, 
+	(SELECT RSTERAM id FROM flow WHERE turbidity > 23)[NOW] f
+WHERE i.id = f.id;

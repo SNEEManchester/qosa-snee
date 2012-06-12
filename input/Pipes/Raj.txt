@@ -1,0 +1,3 @@
+SELECT RSTREAM avg(time)
+FROM InFlow[from Now - 10 seconds slide 5 rows]
+where pressure > 100;

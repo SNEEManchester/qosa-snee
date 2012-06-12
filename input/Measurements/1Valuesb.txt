@@ -1,0 +1,4 @@
+SELECT press as bvalue1
+FROM Inflow;
+
+

@@ -1,0 +1,3 @@
+SELECT RSTREAM *
+FROM iron[NOW], flow[NOW]
+WHERE iron.id = flow.id AND iron.time = flow.time;

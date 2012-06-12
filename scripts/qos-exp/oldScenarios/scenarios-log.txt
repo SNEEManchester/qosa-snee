@@ -1,0 +1,537 @@
+Network file creation
+=====================
+
+small network (10 nodes), 100m x 100m area
+------------------------------------------
+Sink node situated at cell 50,50
+Node 1 situated at cell 51,0
+Node 2 situated at cell 0,70
+Node 3 situated at cell 33,90
+Node 4 situated at cell 77,22
+Node 5 situated at cell 26,62
+Node 6 situated at cell 43,30
+Node 7 situated at cell 45,14
+Node 8 situated at cell 94,65
+Node 9 situated at cell 2,78
+running: /cygdrive/c/Program\ Files/gnuplot/bin/pgnuplot.exe < /cygdrive/c/dias-mc/work2/SNEEql-test/scripts/qos-exp/scenarios/gnu-plot-script.txt
+SUCCESS: Network generated has all nodes connected after 0 tries
+INFO: The average node degree is 5.0
+
+large network (100 nodes), dense network (15m x 15m area)
+---------------------------------------------------------
+Sink node situated at cell 7,7
+Node 1 situated at cell 0,11
+Node 2 situated at cell 10,8
+Node 3 situated at cell 0,0
+Node 4 situated at cell 11,7
+Node 5 situated at cell 8,14
+Node 6 situated at cell 14,4
+Node 7 situated at cell 10,13
+Node 8 situated at cell 11,1
+Node 9 situated at cell 11,11
+Node 10 situated at cell 6,13
+Node 11 situated at cell 9,13
+Node 12 situated at cell 11,13
+Node 13 situated at cell 2,10
+Node 14 situated at cell 0,7
+Node 15 situated at cell 9,14
+Attempting to situate Node 16, Cell 11,1 is not free, retrying
+Node 16 situated at cell 5,14
+Node 17 situated at cell 13,0
+Node 18 situated at cell 7,14
+Node 19 situated at cell 10,14
+Node 20 situated at cell 13,3
+Node 21 situated at cell 1,4
+Node 22 situated at cell 2,13
+Node 23 situated at cell 8,2
+Node 24 situated at cell 1,13
+Node 25 situated at cell 7,1
+Node 26 situated at cell 7,3
+Node 27 situated at cell 6,14
+Node 28 situated at cell 9,10
+Node 29 situated at cell 1,9
+Node 30 situated at cell 5,0
+Attempting to situate Node 31, Cell 5,14 is not free, retrying
+Node 31 situated at cell 6,3
+Attempting to situate Node 32, Cell 9,10 is not free, retrying
+Attempting to situate Node 32, Cell 5,14 is not free, retrying
+Node 32 situated at cell 1,8
+Node 33 situated at cell 14,8
+Node 34 situated at cell 13,11
+Node 35 situated at cell 10,10
+Node 36 situated at cell 0,14
+Node 37 situated at cell 2,5
+Node 38 situated at cell 13,4
+Node 39 situated at cell 9,5
+Attempting to situate Node 40, Cell 6,13 is not free, retrying
+Node 40 situated at cell 0,13
+Node 41 situated at cell 14,12
+Node 42 situated at cell 4,13
+Node 43 situated at cell 12,12
+Node 44 situated at cell 3,1
+Node 45 situated at cell 12,10
+Attempting to situate Node 46, Cell 1,8 is not free, retrying
+Attempting to situate Node 46, Cell 0,13 is not free, retrying
+Node 46 situated at cell 9,3
+Attempting to situate Node 47, Cell 2,5 is not free, retrying
+Node 47 situated at cell 13,13
+Attempting to situate Node 48, Cell 7,14 is not free, retrying
+Node 48 situated at cell 8,6
+Node 49 situated at cell 7,8
+Node 50 situated at cell 5,4
+Node 51 situated at cell 5,7
+Node 52 situated at cell 0,10
+Attempting to situate Node 53, Cell 10,13 is not free, retrying
+Node 53 situated at cell 7,0
+Node 54 situated at cell 12,11
+Node 55 situated at cell 4,10
+Attempting to situate Node 56, Cell 14,12 is not free, retrying
+Node 56 situated at cell 12,2
+Attempting to situate Node 57, Cell 9,13 is not free, retrying
+Node 57 situated at cell 5,3
+Node 58 situated at cell 5,12
+Node 59 situated at cell 9,11
+Attempting to situate Node 60, Cell 5,14 is not free, retrying
+Node 60 situated at cell 12,3
+Node 61 situated at cell 11,3
+Node 62 situated at cell 6,10
+Node 63 situated at cell 13,1
+Node 64 situated at cell 4,6
+Attempting to situate Node 65, Cell 10,8 is not free, retrying
+Attempting to situate Node 65, Cell 2,10 is not free, retrying
+Node 65 situated at cell 12,5
+Node 66 situated at cell 2,11
+Node 67 situated at cell 9,0
+Attempting to situate Node 68, Cell 4,6 is not free, retrying
+Node 68 situated at cell 13,7
+Attempting to situate Node 69, Cell 9,14 is not free, retrying
+Node 69 situated at cell 14,0
+Node 70 situated at cell 2,12
+Attempting to situate Node 71, Cell 9,13 is not free, retrying
+Node 71 situated at cell 5,10
+Node 72 situated at cell 11,5
+Node 73 situated at cell 0,6
+Attempting to situate Node 74, Cell 2,5 is not free, retrying
+Attempting to situate Node 74, Cell 10,8 is not free, retrying
+Node 74 situated at cell 8,5
+Attempting to situate Node 75, Cell 5,4 is not free, retrying
+Attempting to situate Node 75, Cell 7,0 is not free, retrying
+Node 75 situated at cell 10,5
+Attempting to situate Node 76, Cell 12,5 is not free, retrying
+Node 76 situated at cell 2,6
+Attempting to situate Node 77, Cell 5,4 is not free, retrying
+Node 77 situated at cell 13,12
+Attempting to situate Node 78, Cell 8,2 is not free, retrying
+Attempting to situate Node 78, Cell 1,9 is not free, retrying
+Node 78 situated at cell 11,10
+Node 79 situated at cell 7,12
+Attempting to situate Node 80, Cell 2,10 is not free, retrying
+Node 80 situated at cell 6,6
+Attempting to situate Node 81, Cell 13,11 is not free, retrying
+Attempting to situate Node 81, Cell 0,7 is not free, retrying
+Node 81 situated at cell 4,3
+Attempting to situate Node 82, Cell 0,14 is not free, retrying
+Node 82 situated at cell 2,9
+Node 83 situated at cell 14,14
+Node 84 situated at cell 6,7
+Node 85 situated at cell 2,8
+Node 86 situated at cell 11,9
+Node 87 situated at cell 0,3
+Node 88 situated at cell 11,2
+Attempting to situate Node 89, Cell 9,5 is not free, retrying
+Node 89 situated at cell 7,6
+Node 90 situated at cell 3,3
+Node 91 situated at cell 7,13
+Node 92 situated at cell 9,9
+Attempting to situate Node 93, Cell 6,7 is not free, retrying
+Node 93 situated at cell 3,12
+Attempting to situate Node 94, Cell 0,0 is not free, retrying
+Node 94 situated at cell 8,10
+Node 95 situated at cell 1,6
+Attempting to situate Node 96, Cell 7,14 is not free, retrying
+Node 96 situated at cell 10,11
+Node 97 situated at cell 3,14
+Node 98 situated at cell 2,0
+Node 99 situated at cell 8,1
+About to randomly trim 990 edges
+About to randomly trim 790 edges
+About to randomly trim 630 edges
+About to randomly trim 500 edges
+About to randomly trim 400 edges
+About to randomly trim 320 edges
+About to randomly trim 260 edges
+About to randomly trim 210 edges
+About to randomly trim 170 edges
+About to randomly trim 130 edges
+About to randomly trim 110 edges
+About to randomly trim 90 edges
+About to randomly trim 70 edges
+running: /cygdrive/c/Program\ Files/gnuplot/bin/pgnuplot.exe < /cygdrive/c/dias-mc/work2/SNEEql-test/scripts/qos-exp/scenarios/gnu-plot-script.txt
+SUCCESS: Network generated has all nodes connected after 0 tries
+INFO: The average node degree is 6.0
+
+large network (100 nodes), sparse network (400m x 400m area)
+------------------------------------------------------------
+Sink node situated at cell 200,200
+Node 1 situated at cell 352,94
+Node 2 situated at cell 115,7
+Node 3 situated at cell 394,119
+Node 4 situated at cell 154,54
+Node 5 situated at cell 254,56
+Node 6 situated at cell 390,67
+Node 7 situated at cell 200,16
+Node 8 situated at cell 109,54
+Node 9 situated at cell 389,162
+Node 10 situated at cell 258,376
+Node 11 situated at cell 341,4
+Node 12 situated at cell 85,148
+Node 13 situated at cell 75,356
+Node 14 situated at cell 76,213
+Node 15 situated at cell 119,305
+Node 16 situated at cell 380,356
+Node 17 situated at cell 280,207
+Node 18 situated at cell 346,45
+Node 19 situated at cell 393,214
+Node 20 situated at cell 202,53
+Node 21 situated at cell 270,53
+Node 22 situated at cell 10,366
+Node 23 situated at cell 153,200
+Node 24 situated at cell 314,308
+Node 25 situated at cell 145,285
+Node 26 situated at cell 148,367
+Node 27 situated at cell 183,358
+Node 28 situated at cell 50,276
+Node 29 situated at cell 69,42
+Node 30 situated at cell 289,212
+Node 31 situated at cell 83,386
+Node 32 situated at cell 272,142
+Node 33 situated at cell 167,231
+Node 34 situated at cell 8,332
+Node 35 situated at cell 386,75
+Node 36 situated at cell 162,197
+Node 37 situated at cell 206,303
+Node 38 situated at cell 41,323
+Node 39 situated at cell 18,75
+Node 40 situated at cell 37,136
+Node 41 situated at cell 237,332
+Node 42 situated at cell 260,299
+Node 43 situated at cell 142,68
+Node 44 situated at cell 302,5
+Node 45 situated at cell 349,10
+Node 46 situated at cell 286,122
+Node 47 situated at cell 248,298
+Node 48 situated at cell 79,152
+Node 49 situated at cell 175,135
+Node 50 situated at cell 232,54
+Node 51 situated at cell 250,289
+Node 52 situated at cell 344,10
+Node 53 situated at cell 14,150
+Node 54 situated at cell 82,170
+Node 55 situated at cell 34,346
+Node 56 situated at cell 69,306
+Node 57 situated at cell 341,20
+Node 58 situated at cell 128,77
+Node 59 situated at cell 81,245
+Node 60 situated at cell 91,193
+Node 61 situated at cell 287,328
+Node 62 situated at cell 118,244
+Node 63 situated at cell 91,134
+Node 64 situated at cell 41,102
+Node 65 situated at cell 351,21
+Node 66 situated at cell 398,44
+Node 67 situated at cell 96,294
+Node 68 situated at cell 112,171
+Node 69 situated at cell 31,65
+Node 70 situated at cell 181,59
+Node 71 situated at cell 55,296
+Node 72 situated at cell 244,398
+Node 73 situated at cell 320,87
+Node 74 situated at cell 27,350
+Node 75 situated at cell 45,199
+Node 76 situated at cell 187,4
+Node 77 situated at cell 33,168
+Node 78 situated at cell 382,274
+Node 79 situated at cell 104,111
+Node 80 situated at cell 226,179
+Node 81 situated at cell 150,64
+Node 82 situated at cell 14,176
+Node 83 situated at cell 35,125
+Node 84 situated at cell 333,115
+Node 85 situated at cell 88,275
+Node 86 situated at cell 269,370
+Node 87 situated at cell 160,306
+Node 88 situated at cell 335,115
+Node 89 situated at cell 238,28
+Node 90 situated at cell 160,145
+Node 91 situated at cell 215,375
+Node 92 situated at cell 293,251
+Node 93 situated at cell 73,69
+Node 94 situated at cell 248,342
+Node 95 situated at cell 184,383
+Node 96 situated at cell 47,95
+Node 97 situated at cell 1,109
+Node 98 situated at cell 208,296
+Node 99 situated at cell 367,377
+Node 78 is disconnected from the network
+Disconnected nodes, retrying...
+
+
+Sink node situated at cell 200,200
+Node 1 situated at cell 133,230
+Node 2 situated at cell 322,81
+Node 3 situated at cell 44,49
+Node 4 situated at cell 230,209
+Node 5 situated at cell 89,9
+Node 6 situated at cell 133,273
+Node 7 situated at cell 62,331
+Node 8 situated at cell 365,359
+Node 9 situated at cell 33,313
+Node 10 situated at cell 291,175
+Node 11 situated at cell 325,397
+Node 12 situated at cell 35,215
+Node 13 situated at cell 149,275
+Node 14 situated at cell 166,123
+Node 15 situated at cell 166,251
+Node 16 situated at cell 107,118
+Node 17 situated at cell 313,294
+Node 18 situated at cell 106,139
+Node 19 situated at cell 32,202
+Node 20 situated at cell 143,288
+Node 21 situated at cell 208,156
+Node 22 situated at cell 238,154
+Node 23 situated at cell 366,254
+Node 24 situated at cell 33,395
+Node 25 situated at cell 327,185
+Node 26 situated at cell 190,349
+Node 27 situated at cell 208,303
+Node 28 situated at cell 226,104
+Node 29 situated at cell 386,96
+Node 30 situated at cell 89,25
+Node 31 situated at cell 112,228
+Node 32 situated at cell 215,110
+Node 33 situated at cell 193,238
+Node 34 situated at cell 382,65
+Node 35 situated at cell 111,134
+Node 36 situated at cell 244,86
+Node 37 situated at cell 88,154
+Node 38 situated at cell 175,33
+Node 39 situated at cell 183,2
+Node 40 situated at cell 305,167
+Node 41 situated at cell 106,340
+Node 42 situated at cell 320,205
+Node 43 situated at cell 173,73
+Node 44 situated at cell 37,129
+Node 45 situated at cell 10,331
+Node 46 situated at cell 116,151
+Node 47 situated at cell 134,288
+Node 48 situated at cell 260,33
+Node 49 situated at cell 213,326
+Node 50 situated at cell 214,65
+Node 51 situated at cell 239,194
+Node 52 situated at cell 140,323
+Node 53 situated at cell 67,271
+Node 54 situated at cell 397,215
+Node 55 situated at cell 34,112
+Node 56 situated at cell 13,322
+Node 57 situated at cell 297,143
+Node 58 situated at cell 8,149
+Node 59 situated at cell 127,305
+Node 60 situated at cell 73,270
+Node 61 situated at cell 11,41
+Node 62 situated at cell 27,4
+Node 63 situated at cell 27,381
+Node 64 situated at cell 199,24
+Node 65 situated at cell 38,139
+Node 66 situated at cell 362,42
+Node 67 situated at cell 35,133
+Node 68 situated at cell 60,225
+Node 69 situated at cell 8,179
+Node 70 situated at cell 267,347
+Node 71 situated at cell 141,301
+Node 72 situated at cell 238,397
+Node 73 situated at cell 40,209
+Node 74 situated at cell 387,66
+Node 75 situated at cell 361,66
+Node 76 situated at cell 168,222
+Node 77 situated at cell 202,60
+Node 78 situated at cell 335,390
+Node 79 situated at cell 140,393
+Node 80 situated at cell 99,88
+Node 81 situated at cell 70,158
+Node 82 situated at cell 350,310
+Node 83 situated at cell 372,331
+Node 84 situated at cell 125,84
+Node 85 situated at cell 214,287
+Node 86 situated at cell 112,162
+Node 87 situated at cell 8,380
+Node 88 situated at cell 346,244
+Node 89 situated at cell 356,63
+Node 90 situated at cell 27,24
+Node 91 situated at cell 249,381
+Node 92 situated at cell 170,221
+Node 93 situated at cell 142,133
+Node 94 situated at cell 364,158
+Node 95 situated at cell 289,358
+Node 96 situated at cell 40,229
+Node 97 situated at cell 183,242
+Node 98 situated at cell 194,349
+Node 99 situated at cell 240,253
+Node 79 is disconnected from the network
+Disconnected nodes, retrying...
+
+
+Sink node situated at cell 200,200
+Node 1 situated at cell 278,308
+Node 2 situated at cell 99,303
+Node 3 situated at cell 274,192
+Node 4 situated at cell 62,386
+Node 5 situated at cell 259,270
+Node 6 situated at cell 323,124
+Node 7 situated at cell 258,190
+Node 8 situated at cell 26,141
+Node 9 situated at cell 391,167
+Node 10 situated at cell 52,8
+Node 11 situated at cell 133,79
+Node 12 situated at cell 32,94
+Node 13 situated at cell 204,102
+Node 14 situated at cell 110,282
+Node 15 situated at cell 244,308
+Node 16 situated at cell 181,104
+Node 17 situated at cell 377,237
+Node 18 situated at cell 277,384
+Node 19 situated at cell 67,313
+Node 20 situated at cell 119,17
+Node 21 situated at cell 25,236
+Node 22 situated at cell 159,332
+Node 23 situated at cell 152,305
+Node 24 situated at cell 142,328
+Node 25 situated at cell 163,31
+Node 26 situated at cell 151,143
+Node 27 situated at cell 98,69
+Node 28 situated at cell 206,5
+Node 29 situated at cell 147,205
+Node 30 situated at cell 300,119
+Node 31 situated at cell 367,367
+Node 32 situated at cell 100,281
+Node 33 situated at cell 170,160
+Node 34 situated at cell 25,43
+Node 35 situated at cell 246,342
+Node 36 situated at cell 382,395
+Node 37 situated at cell 122,336
+Node 38 situated at cell 113,15
+Node 39 situated at cell 190,96
+Node 40 situated at cell 160,111
+Node 41 situated at cell 360,36
+Node 42 situated at cell 318,162
+Node 43 situated at cell 73,331
+Node 44 situated at cell 179,249
+Node 45 situated at cell 398,141
+Node 46 situated at cell 383,166
+Node 47 situated at cell 21,42
+Node 48 situated at cell 271,106
+Node 49 situated at cell 240,392
+Node 50 situated at cell 11,79
+Node 51 situated at cell 355,355
+Node 52 situated at cell 17,129
+Node 53 situated at cell 314,386
+Node 54 situated at cell 246,316
+Node 55 situated at cell 395,186
+Node 56 situated at cell 370,78
+Node 57 situated at cell 367,216
+Node 58 situated at cell 317,130
+Node 59 situated at cell 212,352
+Node 60 situated at cell 214,278
+Node 61 situated at cell 351,349
+Node 62 situated at cell 189,152
+Node 63 situated at cell 399,176
+Node 64 situated at cell 211,23
+Node 65 situated at cell 8,253
+Node 66 situated at cell 217,18
+Node 67 situated at cell 354,386
+Node 68 situated at cell 9,125
+Node 69 situated at cell 168,339
+Node 70 situated at cell 295,9
+Node 71 situated at cell 258,144
+Node 72 situated at cell 54,356
+Node 73 situated at cell 140,285
+Node 74 situated at cell 124,22
+Node 75 situated at cell 99,49
+Node 76 situated at cell 330,47
+Node 77 situated at cell 287,126
+Node 78 situated at cell 62,105
+Node 79 situated at cell 140,271
+Node 80 situated at cell 79,129
+Node 81 situated at cell 135,361
+Node 82 situated at cell 361,253
+Node 83 situated at cell 2,362
+Node 84 situated at cell 297,259
+Node 85 situated at cell 152,28
+Node 86 situated at cell 104,12
+Node 87 situated at cell 107,314
+Node 88 situated at cell 270,397
+Node 89 situated at cell 350,209
+Node 90 situated at cell 334,199
+Node 91 situated at cell 267,29
+Node 92 situated at cell 5,234
+Node 93 situated at cell 354,186
+Node 94 situated at cell 292,365
+Node 95 situated at cell 143,190
+Node 96 situated at cell 92,353
+Node 97 situated at cell 259,136
+Node 98 situated at cell 193,229
+Node 99 situated at cell 51,250
+running: /cygdrive/c/Program\ Files/gnuplot/bin/pgnuplot.exe < /cygdrive/c/dias-mc/work2/SNEEql-test/scripts/qos-exp/scenarios/gnu-plot-script.txt
+SUCCESS: Network generated has all nodes connected after 2 tries
+INFO: The average node degree is 6.0
+
+Physical schema creation
+========================
+
+schema for 10 node network in which minority of nodes are sources (3/10 nodes)
+------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="InFlow" >
+		<column name="pressure">
+			<type class ="integer"/>
+		</column>
+		<sites>3,4,8</sites>
+	</stream>
+</schema>
+
+schema for 10 node network in which majority of nodes are sources (7/10 nodes)
+------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="InFlow" >
+		<column name="pressure">
+			<type class ="integer"/>
+		</column>
+		<sites>2,3,4,6,7,8,9</sites>
+	</stream>
+</schema>
+
+schema for 100 node network in which minority of nodes are sources(25/100 nodes)
+--------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="InFlow" >
+		<column name="pressure">
+			<type class ="integer"/>
+		</column>
+		<sites>5,6,8,14,20,34,40,41,56,57,72,73,76,77,79,82,83,85,89,90,93,94,95,97,98</sites>
+	</stream>
+</schema>
+
+schema for 100 node network in which majority of nodes are sources(75/100 nodes)
+--------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="InFlow" >
+		<column name="pressure">
+			<type class ="integer"/>
+		</column>
+		<sites>2,3,6,7,8,10,11,12,13,14,18,19,21,22,23,24,26,27,28,30,31,32,33,35,36,37,38,39,40,42,43,44,45,46,47,48,51,52,53,54,56,57,58,60,61,62,64,65,66,68,69,70,71,72,73,74,75,76,77,78,79,80,82,84,85,86,87,88,89,90,91,92,94,96,97</sites>
+	</stream>
+</schema>
+

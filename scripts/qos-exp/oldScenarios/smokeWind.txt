@@ -1,0 +1,5 @@
+SELECT RSTREAM t.id, w.speed, w.direction
+FROM   wind[NOW] w, tree[NOW] t
+WHERE  t.smoke > 0
+AND    t.id <= w.id + 4
+AND    w.id <= t.id + 4;

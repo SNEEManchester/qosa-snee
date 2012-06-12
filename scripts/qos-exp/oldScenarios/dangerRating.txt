@@ -1,0 +1,4 @@
+SELECT RSTREAM wavg.wsp + tavg.temp + tavg.rh
+FROM 
+   (SELECT avg(w.speed) as wsp FROM wind[NOW] w) wavg, 
+   (SELECT avg(t.temperature) as temp, avg(t.rhumidity) as rh FROM tree[now] t) tavg;

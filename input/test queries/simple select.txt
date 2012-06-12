@@ -1,0 +1,7 @@
+SELECT id, conductivity
+FROM iron
+WHERE ph > 25;
+
+SELECT id, time, ph, conductivity
+FROM iron
+WHERE ph > 25;

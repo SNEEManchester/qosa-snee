@@ -1,0 +1,44 @@
+SELECT ISTREAM f.time, f.id, i.maxph, i.minph, f.discharge
+FROM 
+     (SELECT RSTREAM id, MAX(ph) as maxph, MIN(ph) as minph
+	        FROM iron [RANGE 1 hour]
+	        WHERE conductivity > 10
+	        ) [NOW] i,
+	    FLOW [NEW] f
+WHERE i.id = f.id	and F.discharge < 7;
+
+SELECT ISTREAM f.time, f.id, i.maxph, i.minph, f.discharge
+FROM 
+     (SELECT RSTREAM id, MAX(ph) as maxph, MIN(ph) as minph
+	        FROM iron [RANGE 1 hour]
+	        WHERE conductivity > 10
+	        GROUP BY id) [NOW] i,
+	    FLOW [NEW] f
+WHERE i.id = f.id	and F.discharge < 7;
+
+SELECT RSTREAM id, MAX(ph) as maxph, MIN(ph) as minph
+	FROM iron [RANGE 1 hour]
+	WHERE conductivity > 10 and ph < 10 and ph < 18;
+
+SELECT ISTREAM time, I.id, I.ph, F.discharge
+FROM 
+	(SELECT RSTREAM id, MAX(ph) as maxph, MIN(ph) as minph
+	FROM iron [RANGE 1 hour]
+	WHERE conductivity > 10) [NOW] i,
+	FLOW [NEW] f
+WHERE I.id = F.id	and F.discharge < 7;
+
+SELECT  floor1.time, floor1.avgtemp, floor2.avgtemp
+FROM    (SELECT time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding
+    WHERE floor=1) floor1,
+    (SELECT time, AVG(temp) as avgtemp
+    FROM IntelligentBuilding
+    WHERE floor=2) floor2
+WHERE
+    floor1.time = floor2.time;
+
+SELECT id,ph
+FROM iron
+WHERE id IN (SELECT id FROM flow WHERE turbidity > 23);
+

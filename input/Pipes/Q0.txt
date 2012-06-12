@@ -1,0 +1,4 @@
+SELECT RSTREAM Inflow.pressure, Inflow.id
+FROM InFlow[NOW];
+
+

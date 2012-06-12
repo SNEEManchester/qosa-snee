@@ -1,0 +1,19 @@
+
+SELECT RSTREAM hilltop.time, hilltop.rain, river.depth 
+FROM river[NOW], hilltop[AT NOW - 3 SECONDS]
+WHERE hilltop.rain > 100 AND river.rain < hilltop.rain;
+
+
+
+SELECT RSTREAM
+	river.time, river.rain, hilltop.rain
+FROM 	river[NOW],
+	hilltop[AT NOW - 15 MINUTES]
+WHERE 	hilltop.rain > 500
+
+
+
+
+
+
+

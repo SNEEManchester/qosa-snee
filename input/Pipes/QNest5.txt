@@ -1,0 +1,6 @@
+
+SELECT RSTREAM SubOut.outp, SubIn.inp
+FROM 
+   (SELECT AVG(Outflow.pressure) as outp from OutFlow[NOW]) SubOut, 
+   (SELECT AVG(Inflow.pressure) as inp from InFlow[AT now - 10 sec]) SubIn
+WHERE SubOut.outp = SubIn.inp;

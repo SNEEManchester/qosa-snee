@@ -1,0 +1,51 @@
+\section{Grammar to convert Query Tokens into an AST}
+\label{sec_Grammar}
+This section shows the \SNEEql grammar. 
+The grammar takes a series of tokens as inputs and returns an AST (Abstract Syntax Tree).
+The tokens are keywords, symbols and wrappers around integer values, float values and quoted strings with all other text assumed to be variable names.
+
+The Haskell implementation uses the Happy parser generator so the grammar is shown in Happy syntax.
+
+Each rule is represented in the format:
+
+\begin{code} 
+ruleName   : "keyword" otherRule       { HaskelConstuctor $2}
+\end{code} 
+
+Starting with the name of the grammar rule.
+The colon represents the start of a rule while a vertical line "|" starts an alternative version.
+The next part lists the tokens expected by this grammar rule.
+Anything shown in quotes is a keyword, int, float, string and var represent integers, floats, quoted strings and variables names.
+Any other names refers to another grammar rule.
+
+The Haskell AST constructor used by Happy for each rule is shown in curly brackets. The \$n represents pass the value found in the nth position to the Constructor. The notion [\$1] means build a list with the first value as its only member while \$1 : \$3 means add the first value to the list returned by the third value.
+
+The grammar included semantic sugar indicated by the   {- Semantic Sugar -} comment.
+Whenever possible the grammar converts the semantic sugar format to the full format.
+
+So for example the line:
+\begin{code}
+  | extentName  { Extent (ExtentName $1) (LocalName $1) }
+\end{code}
+takes an extent declaration where only the extent name is provided and uses the same var  the \syn{LocalName}.
+This results in an Identical AST for the declaration "FROM Employee Employee" and its shorten form "FROM Employee".
+  
+To keep the typing and translation rules simple the parser distinguishes between lists and expressions without aggregation, those with aggregation and those which mix both aggregated and none aggregated attributes.
+This allows the parser to distinguish between simple queries and aggregated queries, while allowing (but not forcing) group by queries to have mixed list and expressions.
+
+Identify the type of expression while still allowing expression trees such as "avg(temp + 3 * 2) + max(pressure) - min(pressure)" required repeating a lot similar grammar rules.
+
+Priority between arithmetic expressions is provided atomically by the declarations:
+\begin{code}
+%nonassoc ">" "<"
+%left "+" "-"
+%left "*" "/"
+%left "^"
+%left "="
+%left NEG
+\end{code}
+
+\subsection{Actual Grammar file}
+\begin{code}
+\input{SNEEqlHappy.y}
+\end{code}  

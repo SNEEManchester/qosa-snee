@@ -1,0 +1,4 @@
+SELECT time, id, temp, press, light
+FROM Inflow;
+
+

@@ -1,0 +1,4 @@
+SELECT id as agnore1, time as ignore2, press as agnore3, light as agnore4
+FROM Inflow;
+
+

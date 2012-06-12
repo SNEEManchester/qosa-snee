@@ -1,0 +1,4 @@
+SELECT id, time, press as avalue1, light as avalue2, temp as avalue3, humidity as avalue4, acidity as avalue5
+FROM Inflow;
+
+

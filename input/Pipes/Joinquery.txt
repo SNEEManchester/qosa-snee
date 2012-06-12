@@ -1,0 +1,3 @@
+select ph, discharge, conductivity, turbidity
+from iron, flow
+where iron.id = flow.id and ph = 5 and discharge = 10 and conductivity > 100 and turbidity < 8;

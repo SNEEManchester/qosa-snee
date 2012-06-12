@@ -1,0 +1,3 @@
+SELECT RSTREAM id, time, ph
+FROM iron [NEW]
+WHERE ph > 25;

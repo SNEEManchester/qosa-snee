@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<qos-specification
+xmlns="http://dias-mc.cs.manchester.ac.uk"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk qos-specification.xsd">
+
+	<expectations>
+
+		<optimization-goal>
+			<type>MINIMIZE</type>
+			<variable>ACQUISITION_INTERVAL</variable>
+			<weighting>1</weighting>
+		</optimization-goal>
+
+	<constraints>
+		<lifetime>
+			<units>DAYS</units>
+			<constraint>
+				<greater-equals>90</greater-equals>
+			</constraint>
+		</lifetime>
+	</constraints>
+
+
+	</expectations>
+		
+	<query-duration>
+		<units>SECONDS</units>
+		<equals>60</equals>
+	</query-duration>
+			
+</qos-specification>	
+

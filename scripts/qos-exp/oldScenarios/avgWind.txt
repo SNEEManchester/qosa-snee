@@ -1,0 +1,2 @@
+SELECT avg(w.speed)
+FROM wind[NOW] w;

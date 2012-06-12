@@ -1,0 +1,4 @@
+SELECT id, time, press as avalue1
+FROM Inflow;
+
+
