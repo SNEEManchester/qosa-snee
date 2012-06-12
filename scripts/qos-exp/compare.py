@@ -212,7 +212,7 @@ def runSneeql(runAttr, runAttrCols, qosa, qos, scenarioDir, outputDir):
 
 	#derive the qos-filename
 	if qosa in ["routing", "where", "when", "all"]:
-		qosFile = "input/qos/qos-spec%s.xml" % (qos)
+		qosFile = "input/QoS/qos-spec%s.xml" % (qos)
 		coreParams += ["-qos-file="+qosFile]
 
 	queryFile = scenarioDir+os.sep+runAttr["queryId"]+".txt"
