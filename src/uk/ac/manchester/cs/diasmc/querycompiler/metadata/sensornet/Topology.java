@@ -132,12 +132,13 @@ public class Topology extends Graph {
      * Compute the shortest distance between two vertices using Dijkstra's algorithm
      * @param 	sourceID	The identifier of the source vertex.
      * @param 	destID		The identifier of the destination vertex. 
+     * @throws DisconnectedTopologyException 
      * 
      */
     public Path getShortestPath(final String sourceID, 
     		final String destID,
     		final LinkCostMetric linkCostMetric,
-    		RT rt, boolean optDynamicLinkCosts, HashMap<String,LinkCostMetric> hopCostMetricMap) {
+    		RT rt, boolean optDynamicLinkCosts, HashMap<String,LinkCostMetric> hopCostMetricMap) throws DisconnectedTopologyException {
     	
 	final HashMap<String, Double> distance = new HashMap<String, Double>();
 	final HashMap<String, String> previous = new HashMap<String, String>();
@@ -203,8 +204,9 @@ public class Topology extends Graph {
 	    }
 	    logger.finest("Shortest path: " + path.toString());
 	} else if (!sourceID.equals(destID)) {
-	    logger.finest("Sites " + sourceID + " and " + destID
-		    + " are not linked.");
+		String message = "No path from site " + sourceID + " to site " + destID + " found are not linked.";	
+		logger.finest(message);
+		throw new DisconnectedTopologyException(message);
 	}
 	return path;
     }
@@ -240,11 +242,12 @@ public class Topology extends Graph {
      * Simple algorithm used taken from "Protocols and Architectures from 
      * Wireless Sensor Networks" by Holger Karl and Andreas Willig,
      * page 309. 
+     * @throws DisconnectedTopologyException 
      */
     public RT steinerTree(final int sink, final int[] sources,
 	    final String name, int randomSeed, LinkCostMetric linkCostMetric,
 	    FirstVHeuristic optFirstVHeuristic, NextVHeuristic optNextVHeuristic, 
-	    boolean optDynamicLinkCosts) {
+	    boolean optDynamicLinkCosts) throws DisconnectedTopologyException {
 		final RT steinerTree = new RT(name);
 		steinerTree.setDesc("Simple Steiner approximation; linkCostMetric="+linkCostMetric+"; firstVertex="+optFirstVHeuristic
 				+"; nextVertex="+optNextVHeuristic+"; dynamicLinkCosts="+optDynamicLinkCosts);
@@ -393,7 +396,7 @@ public class Topology extends Graph {
     private Triple<String,String,Path> selectNextV(Random random, ArrayList<String> nodesToAdd,
     		ArrayList<String> nodesAdded, LinkCostMetric iterationLinkCostMetric,
     		RT rt, String sinkId, NextVHeuristic optNextVHeuristic, boolean optDynamicLinkCosts,
-    		HashMap<String,LinkCostMetric> hopCostMetricMap) {
+    		HashMap<String,LinkCostMetric> hopCostMetricMap) throws DisconnectedTopologyException {
 	    Triple<String,String,Path> nextBranch; 
 	    
 	    //Choose next Steiner node to add to tree

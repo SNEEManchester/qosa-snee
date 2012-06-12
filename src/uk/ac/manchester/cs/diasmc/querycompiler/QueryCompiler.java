@@ -55,6 +55,7 @@ import uk.ac.manchester.cs.diasmc.querycompiler.codeGeneration.CodeGenTarget;
 import uk.ac.manchester.cs.diasmc.querycompiler.codeGeneration.NesCGeneration;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.costmodels.CostParameters;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.schema.SchemaMetadata;
+import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.DisconnectedTopologyException;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.Topology;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.TopologyReader;
 import uk.ac.manchester.cs.diasmc.querycompiler.mqe.MQE;
@@ -203,10 +204,11 @@ public class QueryCompiler {
      * @return a complete query plan (comprising DAF, RT and agenda)
      * @throws OptimizationException An optimization-related error.
      * @throws AgendaException An agenda-related error.
+     * @throws DisconnectedTopologyException 
      */
 	private static ScoredCandidateList<Agenda> doMultiSitePhase(final int queryID, 
 			final String queryName, final PAF paf) 
-			throws OptimizationException, AgendaException {
+			throws OptimizationException, AgendaException, DisconnectedTopologyException {
 	
 		// Routing	        
 		logger.info("Starting Routing");
@@ -460,7 +462,9 @@ public class QueryCompiler {
         	Utils.handleCriticalException(e);
         } catch (final FileNotFoundException e) {
         	Utils.handleCriticalException(e);
-        } 
+        } catch (DisconnectedTopologyException e) {
+        	Utils.handleCriticalException(e);
+		} 
 
         return plan;    
    }

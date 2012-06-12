@@ -45,6 +45,7 @@ import uk.ac.manchester.cs.diasmc.common.Utils;
 import uk.ac.manchester.cs.diasmc.querycompiler.QueryCompiler;
 import uk.ac.manchester.cs.diasmc.querycompiler.Settings;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.schema.SchemaMetadata;
+import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.DisconnectedTopologyException;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.LinkCostMetric;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.RadioLink;
 import uk.ac.manchester.cs.diasmc.querycompiler.metadata.sensornet.Site;
@@ -92,6 +93,7 @@ public class Routing {
      * @param schemaMetadata relevant metadata relating to the query
      * @param queryName		the name of the query
      * @return a list of candidate routing trees
+     * @throws DisconnectedTopologyException 
      */
     public static final ScoredCandidateList<RT> doRouting(
     		final PAF paf,
@@ -99,7 +101,7 @@ public class Routing {
     		final SchemaMetadata schemaMetadata,
     		final Integer sink,
     		final String queryName, 
-    		final QoSSpec qos) {
+    		final QoSSpec qos) throws DisconnectedTopologyException {
     	
     	ScoredCandidateList<RT> rtList;    	
     	if (Settings.ROUTING_TREE_FILE!=null || !Settings.QOS_AWARE_ROUTING) {
@@ -143,12 +145,13 @@ public class Routing {
      * @param rtList The output of routing trees
      * @param sink The sink node
      * @param sources The source nodes
+	 * @throws DisconnectedTopologyException 
      */
 	private static void doVanillaRouting(final Topology sensornet, 
 			final String queryName, 
 			final ScoredCandidateList<RT> rtList, 
 			final int sink, 
-			final int[] sources) {
+			final int[] sources) throws DisconnectedTopologyException {
 		//Vanilla version
 		//For ICDE08, VLDB08 we used random seed = 4.
 		RT rt = sensornet.steinerTree(sink, sources, queryName, 4, LinkCostMetric.ENERGY,
@@ -163,7 +166,7 @@ public class Routing {
 			final ScoredCandidateList<RT> rtList, 
 			final int sink, 
 			final int[] sources,
-			final QoSSpec qos) {
+			final QoSSpec qos) throws DisconnectedTopologyException {
 
 		int n = 0;
 		
