@@ -1,0 +1,6 @@
+RSTREAM SELECT avgpres, outflow.id, outflow.pressure, outflow.temperature 
+from (
+SELECT  avg(inflow.pressure) as avgpres
+FROM InFlow[Now]),
+OutFlow[Now]
+where avgPres > 50 and OutFlow.pressure < avgpres;

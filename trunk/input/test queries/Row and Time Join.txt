@@ -1,0 +1,4 @@
+SELECT ISTREAM f.time, f.id, f.discharge, i.id, i.ph 
+FROM iron [range 5 rows] i, flow [range 5 seconds] f
+WHERE discharge < 20 and ph < 20;
+

@@ -1,0 +1,5 @@
+SELECT press as avalue1
+FROM Inflow
+where temp < 2000;
+
+

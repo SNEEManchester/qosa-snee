@@ -1,0 +1,5 @@
+SELECT press as avalue1, light as avalue2, temp as avalue3
+FROM Inflow
+where press < 2000 and light < 2000 and temp < 2000 and (light + press) < 3890 and (temp + press) < 3890 and (light + temp) < 3890;
+
+

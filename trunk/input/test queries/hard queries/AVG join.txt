@@ -1,0 +1,11 @@
+SELECT RSTREAM PoleAVG, NestAVG
+FROM 
+	(SELECT RSTREAM AVG(rainlevel) AS PoleAVG 
+		FROM Pole[RANGE 5 SECOND])[NOW],
+	(SELECT RSTREAM AVG(temperature) AS NestAVG 
+		FROM Nest[RANGE 5 SECOND])[NOW]; 
+
+TinyDB closest we can get
+Select winavg(5,1,light),winavg(5,1,temp)
+from sensors
+sample period 1024	

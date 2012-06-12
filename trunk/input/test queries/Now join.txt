@@ -1,0 +1,5 @@
+SELECT RSTREAM P.id, P.time, P.pressure,         
+             V.id, V.vibration, V.machineNum
+FROM vibrationNodes [NEW] V, pressureNodes[NEW] P
+WHERE V.machineNum = P.machineNum 
+              AND V.vibration > 25  AND P.pressure> 45;

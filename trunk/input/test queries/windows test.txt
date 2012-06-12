@@ -1,0 +1,5 @@
+SELECT ISTREAM i.id, I.ph
+FROM iron RANGE 12 seconds until 5 second slide 8 seconds I,
+     flow[NEW], 
+     iron ROWS 5 until 3 slide 1 rows I2;
+

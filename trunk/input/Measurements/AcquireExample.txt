@@ -1,0 +1,5 @@
+SELECT I.light as light, I.press * I.light as myval, I.id as id
+FROM INFLOW I
+WHERE I.light > 1000 and I.humidity > 1000 
+    and I.light + I.humidity > 1500; 
+

@@ -1,0 +1,3 @@
+SELECT RSTREAM i.id,ph
+FROM iron [NOW] i
+WHERE i.id IN (SELECT id FROM flow [NOW] f WHERE turbidity > 23);

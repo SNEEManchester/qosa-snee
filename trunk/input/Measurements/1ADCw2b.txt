@@ -1,0 +1,4 @@
+SELECT press as a1, press as ignore2, press as a3
+FROM Inflow;
+
+

@@ -1,0 +1,3 @@
+SELECT RSTREAM i1.time, i1.id, i1.ph
+FROM iron[NOW] i1, iron[NOW] i2
+WHERE i1.ph > i2.ph;

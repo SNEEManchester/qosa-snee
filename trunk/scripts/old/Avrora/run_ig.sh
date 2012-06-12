@@ -1,0 +1,1 @@
+python runAvrora.py --SNEEql-root-dir=c:/dias-mc/work2/SNEEql/  --simulation-duration=60 --schema-file=input/9node_network_schemas.xml --network-file=input/9node_network_topology --experimental-log-root=c:/dias-mc/icde/experiments --avrora-path=c:/PROGRA~1/UCB/cygwin/tmp/avrora --simulation-duration=120

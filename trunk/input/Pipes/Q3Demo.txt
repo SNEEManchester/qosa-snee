@@ -1,0 +1,4 @@
+SELECT  RSTREAM OutFlow.time, InFlow.pressure, OutFlow.pressure
+FROM    OutFlow[NOW], InFlow[AT now - 10 sec]
+WHERE   InFlow.pressure > 500
+AND     OutFlow.pressure > InFlow.pressure;

@@ -1,0 +1,8 @@
+SELECT RSTREAM PoleAVG, NestAVG
+FROM 
+	(SELECT RSTREAM AVG(rainlevel) AS PoleAVG 
+		FROM Pole[RANGE 1 SECOND])[NOW],
+	(SELECT RSTREAM AVG(temperature) AS NestAVG 
+		FROM Nest[RANGE 1 SECOND])[NOW]; 
+
+	

@@ -1,0 +1,18 @@
+CheckStyle cases for not accepting default settings:
+
+package uk.ac.manchester.cs.diasmc.querycompiler.parsing_typeChecking;
+-Reason Automatically generated.
+
+Use the Sun Check (eclise) style
+    This allows for trailing white space which exclipse often adds.
+    
+Warning: Hides a field.
+example: ProjectOperator(final Operator inputOperator,
+                           final Collection < Variable > projectList)
+Reason: should be acceptable if and onlt if there is a 
+	this.field = field.
+	
+Idea: create new checkstyle
+Lines length 80 changed to 120
+	
+	                           

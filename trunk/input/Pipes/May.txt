@@ -1,0 +1,3 @@
+SELECT temperature-1, temperature/2,square(temperature),sqr(temperature), temperature^2,sqrt(temperature),squareroot(temperature)
+FROM InFlow
+WHERE (temperature+pressure>23*3 and temperature <= 345 and pressure < 34) or pressure < 234 or temperature > 45;    

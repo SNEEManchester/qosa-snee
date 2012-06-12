@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+      
+      <stream name="river">
+    	<column name="flow">
+        	<type class ="integer"/>
+         </column>
+         <sites>5,6,7,9</sites>
+     </stream>
+     <stream name="hilltop">
+         <column name="soil_moisture">
+          	<type class ="integer"/>
+         </column>
+         <sites>4</sites>
+     </stream>
+      <stream name="InFlow">
+    	<column name="pressure">
+        	<type class ="integer"/>
+         </column>          
+         <sites>4,5,7</sites>
+     </stream>
+     <stream name="OutFlow">
+         <column name="pressure">
+          	<type class ="integer"/>
+         </column>       
+         <sites>0,2,4</sites>
+     </stream>
+</schema>

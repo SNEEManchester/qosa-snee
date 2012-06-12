@@ -1,0 +1,2 @@
+SELECT RSTREAM i1.time, i1.id, i1.ph, i2.ph
+FROM iron[NOW] i1, iron[RANGE 1 minute until 1 minute] i2;

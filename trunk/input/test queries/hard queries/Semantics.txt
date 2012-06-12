@@ -1,0 +1,5 @@
+SELECT ISTREAM time, iron.id, AVG(discharge) as average
+FROM flow [RANGE 10 SECONDS] f,
+	    iron [NEW] 
+WHERE iron.id = f.id and discharge < 7
+GROUP BY iron.id;

@@ -1,0 +1,5 @@
+select avgpres 
+from (
+	SELECT RSTREAM avg(pressure) as avgpres
+	FROM InFlow[Now])
+where avgpres > 5000;

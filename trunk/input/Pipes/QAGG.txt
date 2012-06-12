@@ -1,0 +1,2 @@
+SELECT RSTREAM avg(pressure) + 3, sum(pressure) as p2, avg(temperature) as t1, sum(temperature/3) as t2 
+FROM InFlow[Now];

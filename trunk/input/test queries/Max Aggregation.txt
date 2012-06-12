@@ -1,0 +1,2 @@
+SELECT RSTREAM MAX(ph)
+FROM iron[now];

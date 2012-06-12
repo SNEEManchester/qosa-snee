@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="InFlow" >
+		<column name="pressure">
+			<type class ="integer"/>
+		</column>
+		<sites>2,3,4,6,7,8,9</sites>
+	</stream>
+</schema>

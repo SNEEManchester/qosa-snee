@@ -1,0 +1,5 @@
+SELECT time, press as avalue1, light as avalue2, temp as avalue3
+FROM Inflow
+WHERE press > 2000;
+
+

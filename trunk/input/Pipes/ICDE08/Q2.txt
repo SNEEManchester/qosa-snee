@@ -1,0 +1,2 @@
+SELECT RSTREAM avg(pressure)
+FROM InFlow[Now];

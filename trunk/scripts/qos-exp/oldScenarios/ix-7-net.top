@@ -1,0 +1,18 @@
+
+# simple topology specification
+# all nodes are in a line
+# node 0 the sink can communicate with node 6 (the only source)
+#
+# syntax: nodeName x y z
+# nodeName: any string without space
+# coordinates: integer values,
+# one line per node
+# negative coordinates are welcome
+node0 0 60 0
+node1 0 50 0
+node2 0 40 0
+node3 0 30 0
+node4 0 20 0
+node5 0 10 0
+node6 0 0 0
+

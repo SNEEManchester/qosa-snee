@@ -1,0 +1,3 @@
+SELECT RSTREAM *
+FROM inflow[at now - 10 seconds];
+

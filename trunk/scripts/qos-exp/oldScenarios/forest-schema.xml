@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<stream name="tree" >
+		<column name="smoke">
+			<type class ="integer"/>
+		</column>
+		<column name="temperature">
+			<type class ="integer"/>
+		</column>
+		<column name="rhumidity">
+			<type class ="integer"/>
+		</column>
+		<sites>1,3,9,12,13,15,16,19,20,21,23</sites>
+	</stream>
+	<stream name="wind" >
+		<column name="speed">
+			<type class ="integer"/>
+		</column>
+		<column name="direction">
+			<type class ="integer"/>
+		</column>
+		<sites>4,10,22,24</sites>
+	</stream>
+	<stream name="rain" >
+		<column name="level">
+			<type class ="integer"/>
+		</column>
+		<sites>4,10,22,24</sites>
+	</stream>	
+	<stream name="soil" >
+		<column name="moisture">
+			<type class ="integer"/>
+		</column>
+		<sites>6,14,17</sites>
+	</stream>
+</schema>

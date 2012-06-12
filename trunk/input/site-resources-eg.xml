@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<site-resources
+xmlns="http://dias-mc.cs.manchester.ac.uk"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk site-resources.xsd">
+
+
+<units>
+	<energy>JOULES</energy>
+	<memory>KILOBYTES</memory>
+</units>
+
+<sites>
+	<default>
+		<energy-stock>1000</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</default>
+
+	<site id="0">
+		<energy-stock>2000</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>
+	
+	<site id="1">
+		<energy-stock>3000</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>
+
+	<site id="4">
+		<energy-stock>500</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>
+
+	<site id="5">
+		<energy-stock>4000</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>
+
+	<site id="6">
+		<energy-stock>1000</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>	
+	
+	<site id="7">
+		<energy-stock>100</energy-stock>
+		<ram>2</ram>
+		<flash-memory>32</flash-memory>
+	</site>
+	
+</sites>	
+	
+</site-resources>

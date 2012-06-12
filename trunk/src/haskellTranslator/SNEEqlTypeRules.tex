@@ -1,0 +1,708 @@
+\section{Typing a \SNEEql Query}
+\subsection{Typing Rules}
+\label{sec_TypingRules}
+\texttt{Formally defines the different types of data that queries and operators can produce such as relations, streams of tagged tuples and streams of windows.
+Provides formal rules which specify for every possible query what the output type will be.
+These will be presented as formal equations here with the corresponding Haskell code left for the Appendix.}
+
+This sections introduces the typing rules which given an AST or DDL element return the type of data represented by this element.
+
+%\input{SNEEqlTypes.lhs}
+
+\subsection{Typing Rules Format}
+\label{sec_TypingRulesFormat}
+
+A rule is typeset (and numbered) with the premiss(es) above a horizontal
+line and the conclusions below. For Example:
+
+\Rule{
+$\epsilon$ = \syn{(Extent ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$},
+\\ \environment $\ni$ \boundto{$\epsilon_2$}{$\epsilon_1$}
+}{rule_Ex1}
+
+In the rules epsilon ($\epsilon$) is used to represent the AST or DDL element being typed while numbered ($\epsilon_1$) or primed ($\epsilon'$) epsilons represent sub elements.
+A sub element that plays no active role in the rule is represented as just an underscore.
+
+The font \syn{Element} is used for DDL and AST element constructors,
+while the font \typ{Type} is used of type declarations. 
+
+Tau $\tau$ (including its numbered and primed versions) is used to represent a type variable.
+
+\syscat denote the system catalog, and \environment denote an associative environment.
+Declarations and type assertions made for a query or sub query only hold for that specific query or sub query.
+Environment is therefore scoped with \environment representing the current scope and \environment' a local scope accessible only within this query or subquery.
+
+The statement \typeof{A}{B} denotes the expression the type of A is B.
+
+The $\ni$ symbol represent the notion of supports.
+
+In the above example the line \environment $\ni$ \typeof{$\epsilon$}{$\tau$} says that the environment supports that element $\epsilon$ types to the type represented by $\tau$.
+
+The last line in the example includes the statement \boundto{$\epsilon_2$}{$\epsilon_1$},
+which says that the element $\epsilon_2$ is bound to the element $\epsilon_1$.
+Bound to is explained in Section \ref{sec_extentListType}
+
+\input{sneeqlEnvironment.lhs}
+
+\setcounter{equation}{0}
+
+% conclusion without premiss => axiom
+% premiss without conclusion => integrity constraint
+
+\subsubsection{Bootstrapping the Environment with DDL Statements} 
+
+Rule \ref{rule_syscat} confirms that all declaration made in the DDL are available to any environment.
+\Rule{
+\syscat $\ni \epsilon$ 
+}{
+\environment $\ni \epsilon$ 
+}{rule_syscat}
+
+\subsubsection{Deriving Types of DDL-Asserted Attributes} 
+Rules \ref{rule_BoolToken} to \ref{rule_StringToken} assign a primitive type to attribute names according to their DDL declaration.
+
+\Rule{
+\environment $\ni$ \syn{(DeclAtt ($\epsilon$ BoolToken))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_BoolToken}
+
+\Rule{
+\environment $\ni$ \syn{(DeclAtt ($\epsilon$ IntToken))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{int}}
+}{rule_IntToken}
+
+\Rule{
+\environment $\ni$ \syn{(DeclAtt ($\epsilon$ FloatToken))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{float}}
+}{rule_FloatToken}
+
+\Rule{
+\environment $\ni$ \syn{(DeclAtt ($\epsilon$ StringToken))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{string}}
+}{rule_StringToken}
+
+\subsubsection{Typing Literals of Primitive Types}
+Rules \ref{rule_BooleanLitType} assign the primitive type \typ{Boolean} to the AST tokens \syn{(True)} and \syn{(False)}.
+
+\Rule{
+($\epsilon$ = \syn{(True)} $\vee$ $\epsilon$ = \syn{(False)}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_BooleanLitType}
+
+Rules \ref{rule_IntType} to \ref{rule_StringType} assign primitive types to the AST tokens \syn{IntLit}, \syn{FloatLit} and \syn{StringLit} which are wrappers around literals.
+
+\Rule{
+$\epsilon$ = \syn{(IntLit($\epsilon_1$))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{int}},
+}{rule_IntType}
+
+\Rule{
+$\epsilon$ = \syn{(FloatLit($\epsilon_1$))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{float}}
+}{rule_FloatType}
+
+\Rule{
+$\epsilon$ = \syn{(StringLit($\epsilon_1$))}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{string}}
+}{rule_StringType}
+
+\subsubsection{Deriving Types of DDL-Asserted and Derived Extents}
+Rules \ref{rule_RelationExt} to \ref{rule_WindowExt} type DeclExt declaration according to the type token included.
+In all cases the inner tuple type is determined by getting the types of the attribute based on the conclusions of applying rules \ref{rule_BoolToken} to \ref{rule_StringToken} on the attribute names [$\epsilon_1$,
+  \mdots, $\epsilon_n$].
+
+Rule \ref{rule_RelationExt} is for Relations such as stored tables, relational sub queries and views resulting in relations.
+\Rule{
+\environment $\ni$ \syn{(DeclExt ($\epsilon$ $\epsilon'$ [$\epsilon_1$,
+  \mdots, $\epsilon_n$]))}, 
+\\ $\epsilon' \in$ \{\syn{StoredToken, RelationView}\}, 
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots,
+  \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$} 
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}
+}{rule_RelationExt}
+
+Rule \ref{rule_StreamExt} is for streams of tagged tuples which could come from sensed/ acquistional sources, push streams, as well as sub queries and views resulting in a stream of tagged tuples.
+\Rule{
+\environment $\ni$ \syn{(DeclExt ($\epsilon$ $\epsilon'$ [$\epsilon_1$,
+  \mdots, $\epsilon_n$]))}, 
+\\ $\epsilon' \in$ \{\syn{SensedToken, PushedToken, StreamView}\}, 
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots,
+  \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$} 
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{$\tau_1$, \mdots, $\tau_n$}}}}
+}{rule_StreamExt}
+
+Rule \ref{rule_WindowExt} is for streams of windows which could only come from sub queries and views.
+
+\Rule{
+\environment $\ni$ \syn{(DeclExt ($\epsilon$ $\epsilon'$ [$\epsilon_1$,
+  \mdots, $\epsilon_n$]))}, 
+\\ $\epsilon' \in$ \{\syn{WindowView}\}, 
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots,
+  \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}}
+}{rule_WindowExt}
+
+\subsection{Typing a Query}
+\label{sec_wholeQueryType}
+
+\subsubsection{Typing a FullQuery}
+
+To distinguish a full query from one that serves as a sub element in DStream, IStream, RStream, Sub Queries and later views, a \syn{FullQuery} wrapper is placed around the outermost \syn{Query}. 
+This allows the translation rule \ref{rule_TranslateFullQuery} to apply the final \sem{Deliver} operator.
+As \sem{Deliver} has no affect on the type, the typing rule for \syn{FullQuery} is just a pass through where the type of the inner query is the type of the \syn{FullQuery}.
+\Rule{
+$\epsilon$ = \syn{(FullQuery ($\epsilon_1$)},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$}
+}{rule_FullQueryType}
+
+Typing a \syn{Query} introduces a local environment which has access to
+all declarations in the system catalog.  By using a local environment the bindings and type assertions 
+made on the sub elements of the query are only available locally to this query or subquery.
+
+The process consists of
+typing the \syn{ExtentList} to determine the collection type of the
+query and typing the \syn{ProjectList} or \syn{AggregationList} to
+determine the type of every tuple in the collection.  The \syn{Predicate}
+is typed to \typ{Boolean} to verify it is correct.  
+
+Because the query could be a subquery or view, the rules declare an extent with the query name, the appropriate \syn{TypeToken} and the \syn{AttributeName}s.
+The \syn{Query} rules also assert the types associated with each of the attribute names in the outer environment.
+
+\subsubsection{Typing a Relational Query}
+Rule \ref{rule_RelationType} says that both \syn{query} and \syn{AggregationQuery} type to a bag of tuples as long as their \syn{Extent}s $\epsilon_2$ type to a bag of tuples.
+
+\Rule{
+( $\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\ $\vee$ $\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))}),
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]},
+\\  \environment' $\ni$ \typeof{$\epsilon'_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon'_n$}{$\tau_n$},
+\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}},
+\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_4$ RelationView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+\\ 
+}{rule_RelationType}
+
+%The rule for relational queries with aggregation (rule \ref{rule_RelationAggregationType}) is similar to the rule for no aggregate relational queries except that the tuples type comes from the list of \syn{Aggregation}s rather than the \syn{Projection}s.
+%\Rule{
+%$\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+%\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+%\\  $\epsilon_1$ = \syn{[(Aggregation ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Aggregation ($\epsilon'_n$ $\epsilon''_n$))]},
+%\\  \environment' $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+%\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}}
+%}{
+%\environment $\ni$ \typeof{$\epsilon$}{\bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}},
+%\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+%    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+%\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_4$ RelationView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+%}{rule_RelationAggregationType}
+
+\subsubsection{Typing a Window-Stream Query}
+\SNEEql allows queries that return Streams of Windows.
+The most common use will be as inner queries for \syn{IStream}, \syn{Dstream} and \syn{Rstream} see rule \ref{rule_DStreamType}, but they could also be subqueries and views.
+There is no semantic reason why full queries could not return Window-Streams as long as the recipient can handle data which is not in the first normal form.
+
+A \syn{Query} or \syn{AggregationQuery} returns a streams of windows when the \syn{ExtentList} $\epsilon_2$ returns a Stream of windows, for example because it contains window definitions (see rule \ref{rule_WindowedExtentType}) or a join over windowed extents (see rules \ref{rule_ProdWinType} and \ref{rule_ProdRelWin}).
+
+The type of the inner tuple is determined by typing the \syn{Projection} list just like rule \ref{rule_RelationType}.
+
+\Rule{
+($\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\ $\vee$ $\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))}),
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{\_}}}}},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]},
+\\  \environment' $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}},
+\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_4$ WindowView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+}{rule_WindowType}
+
+%Typing windowed queries with aggregation is similar to typing window queries without except that the type of the inner tuple comes from the \syn{Aggreagtion} list.
+%\Rule{
+%$\epsilon$ = \syn{(AggregationQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+%\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{\_}}}}},
+%\\  $\epsilon_1$ = \syn{[(Aggregation ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Aggregation ($\epsilon'_n$ $\epsilon''_n$))]},
+%\\  \environment' $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+%\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}}
+%}{
+%\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}},
+%\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+%    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+%\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_4$ WindowView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+%}{rule_WindowAggregationType}
+
+\subsubsection{Typing a Group By Query}
+A \syn{GroupByQuery} has two extra parameters compared to normal queries.
+The \syn{GroupByLIst} $\epsilon_4$ which represents the list of \syn{Attribute}s declared in the Group By clause.
+This must be validated by Rule \ref{rule_RelationGroupByType} which also declares the group by attributes in the local environment used for typing the other tokens.
+A second \syn{BooleanExpression} $\epsilon_5$ represents the HAVING clause. 
+This too has to type to \typ{Boolean} for the query to be valid.
+
+Rule \ref{rule_RelationGroupByType} for a relational \syn{GroupByQuery} includes all the premisses and conclusions from Rule \ref{rule_RelationType} with the \syn{ExtentName} now being $\epsilon_6$.
+\Rule{
+$\epsilon$ = \syn{(GroupByQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$ $\epsilon_4$ $\epsilon_6$ $\epsilon_5$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\bagof{\tupleof{\_}}},
+\\  \environment' $\ni$ \typeof{$\epsilon_4$}{\_ },
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]},
+\\  \environment' $\ni$ \typeof{$\epsilon'_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon'_n$}{$\tau_n$},
+\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}},
+\\  \environment' $\ni$ \typeof{$\epsilon_5$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}},
+\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_6$ RelationView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+}{rule_RelationGroupByType}
+
+Rule \ref{rule_WindowGroupByType} for a window \syn{GroupByQuery} includes all the premisses and conclusions from Rule \ref{rule_WindowType} with the \syn{ExtentName} now being $\epsilon_6$.
+\Rule{
+$\epsilon$ = \syn{(GroupByQuery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$ $\epsilon_4$ $\epsilon_5$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{\_}}}}},
+\\  \environment' $\ni$ \typeof{$\epsilon_4$}{\_ },
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]},
+\\  \environment' $\ni$ \typeof{$\epsilon'_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon'_n$}{$\tau_n$},
+\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}},
+\\  \environment' $\ni$ \typeof{$\epsilon_5$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}},
+\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_6$ WindowView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+}{rule_WindowGroupByType}
+
+\subsubsection{Typing Tuple-Stream Queries}
+
+Most queries in \SNEEql will return stream of tuples. 
+For simple queries (those without aggregation, group by or joins) a simple tuple stream query will do.
+Notice how there is no rule for \syn{AggregationQuery} or \syn{GroupByQuery} that allow the extents and therefor the whole query to be of type stream of tuples.
+
+\Rule{
+$\epsilon$ = \syn{(Query ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$  $\epsilon_4$))},
+\\  \environment' $\ni$ \typeof{$\epsilon_2$}{\streamof{\tupleof{$\tau_0$, $\tau_0'$, \tupleof{\_}}}},
+\\  $\epsilon_1$ = \syn{[(Projection ($\epsilon'_1$ $\epsilon''_1$)), \mdots, (Projection ($\epsilon'_n$ $\epsilon''_n$))]},
+\\  \environment' $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  \environment' $\ni$ \typeof{$\epsilon_3$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{$\tau_0$, $\tau_0'$, \tupleof{$\tau_1$, \mdots, $\tau_n$}}}},
+\\ \environment $\ni$ \typeof{$\epsilon''_1$}{$\tau_1$},  \mdots,
+    \environment $\ni$ \typeof{$\epsilon''_n$}{$\tau_n$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_4$ StreamView [$\epsilon''_1$, \mdots, $\epsilon''_n$]))}
+}{rule_StreamType}
+
+\subsubsection{Typing IStream, DStream, RStream Queries}
+Another way to get a tuple stream result is to wrap a window stream query (See rule \ref{rule_WindowType}
+% and \ref{rule_WindowAggregationType}
+) with an IStream, DStream or RStream.
+The rule \ref{rule_DStreamType} states that the window stream output of the inner query will be converted to a stream of tagged tuples.
+
+\Rule{
+(($\epsilon$ = \syn{(DStream ($\epsilon_1$))}) $\vee$ ($\epsilon$ = \syn{(IStream ($\epsilon_1$ ))}) 
+\\  $\vee$ ($\epsilon$ = \syn{(RStream ($\epsilon_1$))})),
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{\streamof{\tupleof{$\tau_0$, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}},
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{$\tau_0$, \typ{int}, \tupleof{$\tau_1$, \mdots, $\tau_n$}}}}
+}{rule_DStreamType}
+
+\subsection{Typing the Extents in a Query}
+\label{sec_extentListType}
+The collection type returned by the query is determined by the collection type returned by the extent or the list of extents.
+The typing rules for extents also return the attributes within the collection type both for completion and to verify the correctness of the extent declarations.
+
+\SNEEql uses \syn{LocalName}s for all extents used in the query including sub queries. 
+This allows self joins and disambiguates \syn{AttributeName} clashes in a consistent way.
+
+The rules for typing extents binds each \syn{LocalName} to an \syn{ExtentName}.
+
+Rule \ref{rule_AttributeType} which types the \syn{Attribute} expression verifies that the \syn{LocalName} used there is bound to an \syn{ExtentName}. 
+This verifies that the SELECT and PROJECT clauses to only use extents declared in the FROM clause.
+
+For example given the query:
+
+\dsyn{
+      select e.name as n 
+  \lf from   \> emp as e 
+  \lf where  \> e.name = 'john'
+}
+
+The conclusion would then be \boundto{(\syn{LocalName} e)}{(\syn{ExtentName} emp)} which allow the typing rule for attributes (Rule \ref{rule_AttributeType}) to use e to access the extent declaration made for emp and also to confirm that extent emp is used in the from statement.
+
+Formally the declaration \boundto{A}{B} is only valid is A is of type AST element \syn{LocalName} and B is of type AST element \syn{ExtentName}. Because A and B are different AST elements bound to is not reflexive, transitive, associative or commutative. 
+The bound to declaration is a many to one declaration where more than one \syn{LocalName} can be bound to a single \syn{ExtentName} as would be the case in a self join query.
+Each \syn{LocalName} must be unique with a single query or sub query.
+However there is restriction on using a string within a \syn{LocalName} that has already been used as an \syn{ExtentName}.
+In fact if no local name is provided the grammar will reuse the inner string of the \syn{ExtentName} as the inner string of the \syn{LocalName}.
+\subsubsection{Typing an Extent}
+ 
+Rule \ref{rule_ExtentType} types an extent declaration based on the \syn{ExtentName} which in turn will have been typed based on the DDL \syn{DeclExt} declaration or during the typing of the sub \syn{Query}.
+
+\Rule{
+$\epsilon$ = \syn{(Extent $\epsilon_1$ $\epsilon_2$)},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$},
+\\ \environment $\ni$ \boundto{$\epsilon_2$}{$\epsilon_1$}
+}{rule_ExtentType}
+
+Rule \ref{rule_SubqueryType} shows that when the query includes a \syn{SubQuery} the extent type is determined by the type of the sub query. To allow rule \ref{rule_AttributeType} to access the \syn{DeclExt} declaration made as a conclusion of typing the inner query, rule \ref{rule_SubqueryType} binds the \syn{Localname} $\epsilon_3$ to the \syn{ExtentName} $\epsilon_2$. The parser ensures that the \syn{ExtentName} $\epsilon_2$ is the same as that used in the inner \syn{Query} $\epsilon_1$.
+\Rule{
+$\epsilon$ = \syn{(Subquery ($\epsilon_1$ $\epsilon_2$ $\epsilon_3$))},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$}
+\\ \environment $\ni$ \boundto{$\epsilon_3$}{$\epsilon_2$}
+}{rule_SubqueryType}
+
+Rule \ref{rule_WindowedExtentType} shows that the type of a windowed extent is the type of the inner extent $\epsilon_1$, which should be a stream of tagged tuples, converted to a stream of windows. 
+The actual window scope rules do not affect the type.
+\Rule{
+$\epsilon$ = \syn{(WindowedExtent ($\epsilon_1$ \_ ))},
+\\ \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$},
+\\ $\tau$ = \typ{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{$\tau_1$, \mdots, $\tau_n$}}}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_1$, \mdots, $\tau_n$}}}}},
+}{rule_WindowedExtentType}
+
+Rule \ref{rule_SingleExtentType} confirms that if there is only one extent in the extent list then the type of that extent is the type of the whole list.
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\bagof{$\tau$}}
+}{rule_SingleExtentType}
+
+\subsubsection{Product of Relations}
+
+Rule \ref{rule_ProdRelType} states that an \syn{ExtentList}, where all
+extents are of collection type relation, has collection type relation
+over the concatenation of all the attributes in the relations.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  $\tau_1$ = \typ{\bagof{\tupleof{$\tau_{11}$, \mdots, $\tau_{1m}$}}},
+\\  $\vdots$
+\\  $\tau_n$ = \typ{\bagof{\tupleof{$\tau_{n1}$, \mdots, $\tau_{np}$}}},
+\\  $\tau$ = \typ{\tupleof{$\tau_{11}$, \mdots, $\tau_{1m}$, \mdots, $\tau_{n1}$, \mdots, $\tau_{np}$}},
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\bagof{$\tau$}}
+}{rule_ProdRelType}
+
+\subsubsection{Product of Window Streams}
+
+Rule \ref{rule_ProdWinType} states that an \syn{ExtentList}, where all
+extents are of collection type window-stream, has collection type
+window-stream over the concatenation of all the attributes in the
+windows.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$}
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$}}}}},
+\\  $\vdots$
+\\  $\tau_n$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_{n1}$, \mdots, $\tau_{nq}$}}}}},
+\\  $\tau$ = \typ{\tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$, \mdots, $\tau_{n1}$, \mdots, $\tau_{nq}$}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \bagof{$\tau$}}}}
+}{rule_ProdWinType}
+
+\subsubsection{Product of Multiple Relations and a Stream}
+
+Rule \ref{rule_ProdRelStreamType} states that an \syn{ExtentList},
+where all extents but one have collection type relation with the last
+being of collection type tuple-stream, has collection type tuple-stream
+over the concatenation of all the attributes in the relations and the
+stream.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$}
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \typ{int}, \tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$}}}},
+\\  $\tau_2$ = \typ{\bagof{\tupleof{$\tau_{21}$, \mdots, $\tau_{2q}$}}},
+\\  $\vdots$
+\\  $\tau_{n}$ = \typ{\bagof{\tupleof{$\tau_{n1}$, \mdots, $\tau_{nr}$}}},
+\\ $\tau$ = \typ{\tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$, $\tau_{21}$, \mdots, $\tau_{2q}$,  \mdots, $\tau_{n1}$, \mdots, $\tau_{nr}$}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \typ{int}, $\tau$}}}
+}{rule_ProdRelStreamType}
+
+\subsubsection{Product of Multiple Relations and Window-Streams}
+
+Rule \ref{rule_ProdRelWin} states that an \syn{ExtentList}, where some
+extents are of collection type relation and the rest are of collection
+type window-stream, has collection type window-stream over the
+concatenation of all the attributes in the relations and the windows.
+
+\Rule{
+$\epsilon$ = \syn{(ExtentList [$\epsilon_1$, \mdots, $\epsilon_n$])},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+\\  $\tau_1$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$}}}}},
+\\  $\vdots$
+\\  $\tau_{n}$ = \typ{\streamof{\tupleof{\typ{int}, \bagof{\tupleof{$\tau_{n1}$, \mdots, $\tau_{nq}$}}}}},
+\\  $\tau_{n+1}$ = \typ{\bagof{\tupleof{$\tau_{(n+1)1}$, \mdots, $\tau_{(n+1)r}$}}},
+\\  $\vdots$
+\\  $\tau_{n+m}$ = \typ{\typ{int}, \bagof{\tupleof{$\tau_{(n+m)1}$, \mdots, $\tau_{(n+m)s}$}}},
+\\  \hspace{-0.75cm}$\tau$ = \typ{\tupleof{$\tau_{11}$, \mdots, $\tau_{1p}$, \mdots, $\tau_{n1}$, \mdots, $\tau_{nq}$, $\tau_{(n+1)1}$, \mdots, $\tau_{(n+1)r}$, \mdots, $\tau_{(n+m)1}$, \mdots, $\tau_{(n+m)s}$}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\streamof{\tupleof{\typ{int}, \bagof{$\tau$}}}}
+}{rule_ProdRelWin}
+%Why not many rels and many windows?
+
+\subsection{Typing the Projected Attributes in a Query}
+
+\subsubsection{Typing Attributes}
+Rules \ref{rule_AttributeType} and \ref{rule_TupleAttributeType} determine both the type of an attribute but also that the attribute can be used.
+
+The type associated with the \syn{AttributeName} $\epsilon_2$ will already have been determined by a DDL declaration 
+(Rules \ref{rule_BoolToken} to \ref{rule_StringToken}) or by the typing of \syn{Query} used as a sub query (Rules \ref{rule_RelationType} to \ref{rule_StreamType}).
+
+The second role of rule \ref{rule_AttributeType} is to verify the validity.
+The first step is to check that the \syn{LocalName} $\epsilon_1$ has been bound to an \syn{ExtentName} $\epsilon_3$ by either the typing of an \syn{Extent} (rule \ref{rule_ExtentType}) or by typing a \syn{SubQuery} (rule \ref{rule_SubqueryType}).
+The next step is to obtain the \syn{DeclExt} declaration from the local environment which will have been placed there either because it was in the the system catalogue (Rule \ref{rule_syscat}) or by the typing of a sub \syn{Query} (Rules \ref{rule_RelationType} to \ref{rule_StreamType}).
+The final step it to confirm that the \syn{AttributeName} $\epsilon_2$ is actually in the list of \syn{AttributeName}s [$\epsilon'_1$, \mdots, $\epsilon'_n$] found in that \syn{DeclExt}.
+
+Attribute values found within aggregates and therefore within a \syn{Collection} or attributes from the WHERE clause will be be the AST type \syn{TupleAttribute} as they can never refer to the GROUP BY list.
+\Rule{
+$\epsilon$ = \syn{(TupleAttribute ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \typeof{$\epsilon_2$}{$\tau$},
+\\ \environment $\ni$ \boundto{$\epsilon_1$}{$\epsilon_3$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_3$ \_ [$\epsilon'_1$, \mdots, $\epsilon'_n$]))}, 
+\\ $\epsilon_2 \in \{\epsilon'_1$, \mdots, $\epsilon'_n$\}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$}
+}{rule_TupleAttributeType}
+
+An attribute not in an aggregate will be a plain \syn{Attribute}. 
+In addition to check done in rule \ref{rule_TupleAttributeType} the rule must check that either the attribute is in the group by statement or that there is no group by statement.
+
+For \syn{GroupByQuery} the rules(\ref{rule_RelationGroupByType} and \ref{rule_WindowGroupByType}) will have inserted a \syn{DeclGroupBy} declaration into the Environment. 
+Only attributes in this declaration are allowed outside of an aggregate.
+
+\Rule{
+$\epsilon$ = \syn{(Attribute ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\ni$ \typeof{$\epsilon_2$}{$\tau$},
+\\ \environment $\ni$ \boundto{$\epsilon_1$}{$\epsilon_3$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_3$ \_ [$\epsilon'_1$, \mdots, $\epsilon'_n$]))}, 
+\\ $\epsilon_2 \in \{\epsilon'_1$, \mdots, $\epsilon'_n$\},
+\\ \environment $\ni$ \syn{(DeclGroupBy ([$\epsilon''_1$, \mdots, $\epsilon''_n$]))}, 
+\\  $\epsilon_2 \in \{\epsilon''_1$, \mdots, $\epsilon''_n$\} 
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$}
+}{rule_AttributeInGroupType}
+
+For a normal \syn{Query} or an \syn{AggregationQuery} where there is no Group By clause the will be no \syn{DeclGroupBy} in the environment. 
+
+\Rule{
+$\epsilon$ = \syn{(Attribute ($\epsilon_1$ $\epsilon_2$))},
+\\ \environment $\not\ni$ \syn{(DeclGroupBy ([$\epsilon''_1$, \mdots, $\epsilon''_n$]))},
+\\ \environment $\ni$ \typeof{$\epsilon_2$}{$\tau$},
+\\ \environment $\ni$ \boundto{$\epsilon_1$}{$\epsilon_3$},
+\\ \environment $\ni$ \syn{(DeclExt ($\epsilon_3$ \_ [$\epsilon'_1$, \mdots, $\epsilon'_n$]))}, 
+\\ $\epsilon_2 \in \{\epsilon'_1$, \mdots, $\epsilon'_n$\},
+}{
+\environment $\ni$ \typeof{$\epsilon$}{$\tau$}
+}{rule_AttributeType}
+
+\subsubsection{Typing Arithmetic Expressions} 
+Rule \ref{rule_AddType} states that atomic arithmetic operations
+such as \syn{Add}, \syn{Minus}, \syn{Multiply} or \syn{Divide} applied
+to arguments of the same numerical type \typ{int} yield a result of that type.
+\Rule{
+   ($\epsilon$ = \syn{(Add      ($\epsilon_1$ $\epsilon_2$))} $\vee$
+    $\epsilon$ = \syn{(Minus    ($\epsilon_1$ $\epsilon_2$))} $\vee$ 
+\\  $\epsilon$ = \syn{(Multiply ($\epsilon_1$ $\epsilon_2$))} $\vee$ 
+    $\epsilon$ = \syn{(Divide   ($\epsilon_1$ $\epsilon_2$))}),
+\\  (\environment $\ni$ \typeof{$\epsilon_1$}{$\tau$} $\wedge$ \environment $\ni$ \typeof{$\epsilon_2$}{$\tau$})
+\\ (($\tau$ = \typ{int}) $\vee$ (($\tau$ = \typ{float})
+}{
+\environment $\ni$ \typeof{$\epsilon$}{{$\tau$}}
+}{rule_AddType}
+
+Rule \ref{rule_AddMixType} states that atomic arithmetic operations
+such as \syn{Add}, \syn{Minus}, \syn{Multiply} or \syn{Divide} applied
+to an \typ{Int} and a \typ{Float} yields a result of type \typ{float}.
+This assumes an implied type casting of the \typ{int} value to a \typ{float} value.
+
+\Rule{
+   ($\epsilon$ = \syn{(Add      ($\epsilon_1$ $\epsilon_2$))} $\vee$
+    $\epsilon$ = \syn{(Minus    ($\epsilon_1$ $\epsilon_2$))} $\vee$ 
+\\  $\epsilon$ = \syn{(Multiply ($\epsilon_1$ $\epsilon_2$))} $\vee$ 
+    $\epsilon$ = \syn{(Divide   ($\epsilon_1$ $\epsilon_2$))}),
+\\  ((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{int}}   $\wedge$ \environment $\ni$ \typeof{$\epsilon_2$}{\typ{float}}) $\vee$
+\\   (\environment $\ni$ \typeof{$\epsilon_1$}{\typ{float}} $\wedge$ \environment $\ni$ \typeof{$\epsilon_2$}{\typ{int}})  
+}{
+\environment $\ni$ \typeof{$\epsilon$}{{\typ{float}}}
+}{rule_AddMixType}
+
+Rule \ref{rule_NegateType} states that the arithmetic operation \syn{Negate} applied
+to a numerical type is that type.
+\Rule{
+   $\epsilon$ = \syn{(Negate ($\epsilon_1$))}
+\\  ((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{$\tau$}}
+\\ (($\tau$ = \typ{int}) $\vee$ ($\tau$ = \typ{float}))
+}{
+\environment $\ni$ \typeof{$\epsilon$}{{$\tau$}}
+}{rule_NegateType}
+
+\subsubsection{Typing String Expressions}
+Rule \ref{rule_ConcatType} states that atomic string operations
+such as \syn{Concat} can only be applied to arguments of type \typ{string} yielding a
+result of type \typ{string}.
+
+\Rule{
+   $\epsilon$ = \syn{(Concat  ($\epsilon_1$ $\epsilon_2$))},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{\typ{string}},
+\\  \environment $\ni$ \typeof{$\epsilon_2$}{\typ{string}},
+}{
+\environment $\ni$ \typeof{$\epsilon$}{{\typ{string}}}
+}{rule_ConcatType}
+
+
+\subsection{Typing Aggregates}
+
+Because aggregates operator over the whole bag rather than individual tuples the inputs to aggregate expressions are collected together before applying the aggregate operator.
+\Rule{
+$\epsilon$ = \syn{(Collection ($\epsilon_1$))},
+\\   \environment $\ni$ \typeof{$\epsilon_1$}{$\tau$}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{\bagof{$\tau$}}}
+}{rule_CollectionType}
+
+Rule \ref{rule_CountType} states that the type of an \syn{Count} on a bag of any type is always an \typ{int}.
+\Rule{
+$\epsilon$ = \syn{(Count ($\epsilon_1$))},
+\\   \environment $\ni$ \typeof{$\epsilon_1$}{\bagof{\_}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{int}}
+}{rule_CountType}
+
+Rule \ref{rule_AvgType} states that the type of an \syn{Avg} on a bag of numerical value is always a \typ{float}.
+\Rule{
+$\epsilon$ = \syn{(Avg ($\epsilon_1$))},
+\\   ((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{\bagof{int}}}) $\vee$ (\environment $\ni$ \typeof{$\epsilon_1$}{\typ{\bagof{float}}}))
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{float}}
+}{rule_AvgType}
+
+Rule \ref{rule_MinIntType} states that the type of a other mathematical functions such \syn{Min}, \syn{Max} or \syn{Sum} applied on a bag of a single type is an instance of that type, as long as the type is numerical.
+\Rule{
+($\epsilon$ = \syn{(Min ($\epsilon_1$))} $\vee$
+ $\epsilon$ = \syn{(Max ($\epsilon_1$))} $\vee$
+ $\epsilon$ = \syn{(Sum ($\epsilon_1$))}),
+\\   \environment $\ni$ \typeof{$\epsilon_1$}{\typ{\bagof{$\tau$}}}
+\\ ($\tau$ = \typ{int} $\vee$ $\tau$ = \typ{float})
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{$\tau$}}
+}
+{rule_MinIntType}
+\subsection{Typing Predicate Expressions}
+
+The type of a valid \syn{Predicate} will always be \typ{Boolean}, or to be formal will be a function which takes a tuple as input and returns a \typ{Boolean}.
+
+Rule \ref{rule_Equals} states that any two expressions of the same type can be tested for equality or inequality.
+
+\Rule{
+(($\epsilon$ = \syn{(Equals ($\epsilon_1$ $\epsilon_2$))})
+$\wedge$ ($\epsilon$ = \syn{(NotEquals ($\epsilon_1$ $\epsilon_2$))}))
+\\   \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$},
+\\   \environment $\ni$ \typeof{$\epsilon_2$}{$\tau_2$},
+\\ $\tau_1$ = $\tau_2$
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_Equals}
+
+Rule \ref{rule_compareType} states that mathematical comparison expressions \syn{GreaterThan},
+
+\noindent \syn{GreaterThanOrEquals}, \syn{LessThan} or \syn{LessThanOrEquals} are valid if both expressions being compared are of type \typ{int} or both are of type \typ{float}
+
+\Rule{
+((($\epsilon$ = \syn{(GreaterThan ($\epsilon_1$ $\epsilon_2$))})
+$\wedge$ ($\epsilon$ = \syn{(LessThan ($\epsilon_1$ $\epsilon_2$))})
+\\$\wedge$ ($\epsilon$ = \syn{(GreaterThanOrEquals ($\epsilon_1$ $\epsilon_2$))})
+\\$\wedge$ ($\epsilon$ = \syn{(LessThanOrEquals ($\epsilon_1$ $\epsilon_2$))})),
+\\   (((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{int}}) 
+    $\vee$ (\environment $\ni$ \typeof{$\epsilon_2$}{\typ{int}})) $\wedge$
+   ((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{float}}) 
+    $\vee$ (\environment $\ni$ \typeof{$\epsilon_2$}{\typ{float}})))
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_compareType}
+
+Rule \ref{rule_castCompareType} states that \syn{Equals}, \syn{NotEquals} and mathematical comparison expressions \syn{GreaterThan}, 
+\syn{GreaterThanOrEquals}, \syn{LessThan} or \syn{LessThanOrEquals} where one expression has a type \typ{int} and the other has type \typ{float} are valid.
+This assumes an implied type casting of the \typ{int} value to a \typ{float} value.
+
+\Rule{
+(($\epsilon$ = \syn{(Equals ($\epsilon_1$ $\epsilon_2$))}) 
+$\wedge$ ($\epsilon$ = \syn{(NotEquals ($\epsilon_1$ $\epsilon_2$))}))
+\\$\wedge$ ($\epsilon$ = \syn{(GreaterThan ($\epsilon_1$ $\epsilon_2$))})
+\\$\wedge$ ($\epsilon$ = \syn{(GreaterThanOrEquals ($\epsilon_1$ $\epsilon_2$))})
+\\$\wedge$ ($\epsilon$ = \syn{(LessThan ($\epsilon_1$ $\epsilon_2$))})
+$\wedge$ ($\epsilon$ = \syn{(LessThanOrEquals ($\epsilon_1$ $\epsilon_2$))})),
+\\   (((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{int}}) 
+    $\vee$ (\environment $\ni$ \typeof{$\epsilon_2$}{\typ{float}})) $\wedge$
+   ((\environment $\ni$ \typeof{$\epsilon_1$}{\typ{float}}) 
+    $\vee$ (\environment $\ni$ \typeof{$\epsilon_2$}{\typ{int}})))
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_castCompareType}
+
+Rule \ref{rule_AndType} states that an \syn{And} or \syn{Or} is a \typ{Boolean} if all input are \typ{Boolean}.
+\Rule{
+(($\epsilon$ = \syn{(And ([$\epsilon_1$, \mdots, $\epsilon_n$]))}) 
+    $\wedge$ ($\epsilon$ = \syn{(Or ([$\epsilon_1$, \mdots, $\epsilon_n$]))})),
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{\typ{Boolean}}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{\typ{Boolean}}
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_AndType}
+
+Rule \ref{rule_NotType} states that any \syn{Not} is a \typ{Boolean} as long as the input is a \typ{Boolean}.
+\Rule{
+$\epsilon$ = \syn{(Not ($\epsilon_1$))},
+\\   \environment $\ni$ \typeof{$\epsilon_1$}{\typ{Boolean}},
+}{
+\environment $\ni$ \typeof{$\epsilon$}{\typ{Boolean}}
+}{rule_NotType}
+
+\subsection{Typing the Group By Clause}
+Rule \ref{rule_GroupByType} shows that typing a \syn{GroupByList} consists of typing each \syn{Attribute} [$\epsilon_1$, \mdots, $\epsilon_n$].
+Rule \ref{rule_AttributeType} which types a \syn{Attribute} also verifies that the attribute is used in the FROM clause.
+
+The rule also declares a \syn{DeclGroupBy} which hold the \syn{Attribute} list.
+This way any \syn{Attribute} in the Select, Having and Where clauses can be checked by rule \ref{rule_AttributeInGroupType}.
+There will never be more than one \syn{DeclGroupBy} per environment as there is only one Group By statement in any query. 
+Sub queries are typed in a separate environment which can have a separate \syn{DeclGroupBy}.
+
+The type of a GroupByList is a tuple of the types of each of the attributes.
+
+\Rule{
+$\epsilon$ = \syn{(GroupByList ([$\epsilon_1$, \mdots, $\epsilon_n$]))},
+\\  \environment $\ni$ \typeof{$\epsilon_1$}{$\tau_1$}, \mdots, \environment $\ni$ \typeof{$\epsilon_n$}{$\tau_n$},
+}{
+\environment $\ni$ \syn{(DeclGroupBy ([$\epsilon_1$, \mdots, $\epsilon_n$]))},
+\\ \environment $\ni$ \typeof{$\epsilon$}{\tupleof{$\tau_1$, \mdots, $\tau_n$}}
+}{rule_GroupByType}
+
+
+

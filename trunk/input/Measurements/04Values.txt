@@ -1,0 +1,5 @@
+SELECT press as avalue1, light as avalue2, temp as avalue3, humidity as avalue4
+FROM Inflow
+WHERE press > 2000;
+
+

@@ -1,0 +1,4 @@
+SELECT RSTREAM *
+FROM inflow[NOW]
+where pressure > 500;
+

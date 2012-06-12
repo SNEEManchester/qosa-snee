@@ -1,0 +1,7 @@
+SELECT RSTREAM t.id, t.time, t.val, p.val
+FROM Temperature [Range 5 sec slide 5 sec] t,
+	Pressure [Range 5 sec slide 5 sec] p
+WHERE t.id = p.id
+AND t.val > 25
+AND t.floor = 5;
+

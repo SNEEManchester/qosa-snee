@@ -1,0 +1,4 @@
+SELECT RSTREAM iron.id, iron.time, iron.ph, flow.discharge
+FROM iron[RANGE 1 minutes], 
+	 flow[NOW]
+WHERE iron.id = flow.id; 

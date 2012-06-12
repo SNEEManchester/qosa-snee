@@ -1,0 +1,4 @@
+SELECT RSTREAM Rons.temp, Als.temp
+FROM Rons[NOW], Als[NOW]
+where Rons.light < 100 
+and Als.light < 100;

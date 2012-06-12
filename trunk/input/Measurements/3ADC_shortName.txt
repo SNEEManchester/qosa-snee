@@ -1,0 +1,2 @@
+SELECT press as p, light as l, temp as t
+FROM Inflow;

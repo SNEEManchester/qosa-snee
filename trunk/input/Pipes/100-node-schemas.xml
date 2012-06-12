@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+      
+      <stream name="InFlow">
+    	<column name="pressure">
+        	<type class ="integer"/>
+         </column>
+         <sites>0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96</sites>
+     </stream>
+     <stream name="OutFlow">
+         <column name="pressure">
+          	<type class ="integer"/>
+         </column>
+         <sites>2,6,10,14,18,22,26,30,34,40,42,46,50,54,58,62,66,70,74,78,82,86,90,94,98</sites>
+     </stream>
+</schema>

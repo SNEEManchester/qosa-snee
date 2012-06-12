@@ -1,0 +1,3 @@
+COMPONENT=QueryPlanAppC
+include $(MAKERULES)
+

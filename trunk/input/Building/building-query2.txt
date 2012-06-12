@@ -1,0 +1,4 @@
+SELECT RSTREAM Avg(Rooms.temp)
+FROM Rooms[NOW]
+where temp > 30
+and light < 100;

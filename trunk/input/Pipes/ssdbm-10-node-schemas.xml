@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<sinks>0</sinks>
+      <stream name="InFlow">
+    	<column name="pressure">
+        	<type class ="integer"/>
+         </column>
+         <sites>7,8,9</sites>
+     </stream>
+     <stream name="OutFlow">
+         <column name="pressure">
+          	<type class ="integer"/>
+         </column>
+         <sites>2,5,8</sites>
+     </stream>
+</schema>
