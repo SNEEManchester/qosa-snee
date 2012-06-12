@@ -277,7 +277,7 @@ public class QoSSpecReader extends QoSSpec {
 	    ParserConfigurationException, SAXException, IOException,
 	    XPathExpressionException, UnrecognizedUnitException {
 	//TODO: put this in ini file
-	Utils.validateXMLFile(filename, "input/qos/qos-specification.xsd");
+	Utils.validateXMLFile(filename, "input/QoS/qos-specification.xsd");
 
 	//Now read the data from the file
 
