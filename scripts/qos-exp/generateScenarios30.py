@@ -4,21 +4,21 @@
 #Scenarios 2 (exp3): fixed query, schema min/maj, queries with different densities
 #NB: outputs dirs assumed to exist
 #TODO: Move query generator out to a separate library
-import os, random, RandomSeeder, math, networkLib, SneeqlLib, sys, getopt, UtilLib
+import os, random, RandomSeeder, math, networkLib30, SneeqlLib, sys, getopt, UtilLib
 
-#optNumNodes = 30
+optNumNodes = 30
 #Used for scaling experiments
-optNumNodes = 100
+#optNumNodes = 100
 optScenariosFile = 'scenarios.csv'
 
 #Scenarios 1
 optNumScenarios = 30 
 
 #Scenarios with max 30 nodes
-#optOutputDir1 = os.getenv('HOME')+os.sep+"tmp"+os.sep+"results"+os.sep+"scenarios1"
+optOutputDir1 = os.getenv('HOME')+os.sep+"tmp"+os.sep+"results"+os.sep+"scenarios1"
 
 #Scenarios with max 100 nodes
-optOutputDir1 = os.getenv('HOME')+os.sep+"tmp"+os.sep+"results"+os.sep+"scenarios100"
+#optOutputDir1 = os.getenv('HOME')+os.sep+"tmp"+os.sep+"results"+os.sep+"scenarios100"
 
 #Scenarios 2
 optPercentSources = [50,100]
@@ -167,7 +167,7 @@ def getCandidateNode(nodes, rValue, id):
         angle = random.randrange(0,360,1)
         dx = math.floor(math.cos(angle)*(optRadioRange/float(rValue)))
         dy = math.floor(math.sin(angle)*(optRadioRange/float(rValue)))
-        n = networkLib.Node(id, int(randomNode.xPos + dx), int(randomNode.yPos + dy))
+        n = networkLib30.Node(id, int(randomNode.xPos + dx), int(randomNode.yPos + dy))
         return n
 
 def generateSpiderNetwork(numNodes, rValue, networkId, outputDir):
@@ -177,7 +177,7 @@ def generateSpiderNetwork(numNodes, rValue, networkId, outputDir):
     maxx = 0
     maxy = 0
 
-    sink = networkLib.Node(0, 0, 0)
+    sink = networkLib30.Node(0, 0, 0)
     nodes = [sink]
     dupsCheckList = ["0_0"]
 
@@ -200,7 +200,7 @@ def generateSpiderNetwork(numNodes, rValue, networkId, outputDir):
     xDim = maxx - minx
     yDim = maxy - miny
         
-    f = networkLib.Field(xDim, yDim, minx, miny)
+    f = networkLib30.Field(xDim, yDim, minx, miny)
     for n in nodes:
         f.addNode(n.id, n.xPos, n.yPos)
 
