@@ -56,11 +56,11 @@ public class Matlab {
 		    String matlabexe = LocalSettings.getMatlabExe();
 		    
 		    System.err.println(matlabexe +
-		    		" -nodesktop -nojvm -nosplash -nodisplay " +
+		    		" -nodesktop -nosplash -nodisplay " +
 		    		"-r " + inputScriptName.replace(".m", "") + " -logfile " + outputFileName);
 		    
 		    final Process proc = rt.exec(new String[] { matlabexe,
-		    		"-nodesktop", "-nojvm", "-nosplash", "-nodisplay",
+		    		"-nodesktop", "-nosplash", "-nodisplay",
 		    		"-r", inputScriptName.replace(".m", ""),
 			    "-logfile", outputFileName}, null, new File(System.getProperty("user.dir"))); 
 		    //"-nodesktop", REMOVED FOR DEBUGGING - was before "-r"
