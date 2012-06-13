@@ -61,8 +61,8 @@ public class Matlab {
 		    
 		    final Process proc = rt.exec(new String[] { matlabexe,
 		    		"-nodesktop", "-nosplash", "-nodisplay",
-		    		"<", inputScriptName.replace(".m", ""),
-			    ">", outputFileName}, null, new File(System.getProperty("user.dir"))); 
+		    		"< "+ inputScriptName.replace(".m", ""),
+			    "> " + outputFileName}, null, new File(System.getProperty("user.dir"))); 
 		    //"-nodesktop", REMOVED FOR DEBUGGING - was before "-r"
 		    //older versions of matlab used /r amd /logfile
 		    
