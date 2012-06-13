@@ -54,10 +54,13 @@ public class Matlab {
 		    final Runtime rt = Runtime.getRuntime();
 	
 		    String matlabexe = LocalSettings.getMatlabExe();
-		    System.err.println(LocalSettings.getMatlabExe() + " -nodesktop -r "+
-		    		inputScriptName.replace(".m", "") + " -logfile " + outputFileName);
 		    
-		    final Process proc = rt.exec(new String[] { LocalSettings.getMatlabExe(),
+		    System.err.println(matlabexe +
+		    		" -nodesktop -nojvm -nosplash -nodisplay " +
+		    		"-r " + inputScriptName.replace(".m", "") + " -logfile " + outputFileName);
+		    
+		    final Process proc = rt.exec(new String[] { matlabexe,
+		    		"-nodesktop", "-nojvm", "-nosplash", "-nodisplay",
 		    		"-r", inputScriptName.replace(".m", ""),
 			    "-logfile", outputFileName}, null, new File(System.getProperty("user.dir"))); 
 		    //"-nodesktop", REMOVED FOR DEBUGGING - was before "-r"
