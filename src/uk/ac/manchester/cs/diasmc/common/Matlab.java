@@ -54,21 +54,19 @@ public class Matlab {
 		    final Runtime rt = Runtime.getRuntime();
 	
 		    String matlabexe = LocalSettings.getMatlabExe();
-		    
-		    System.err.println(matlabexe +
-		    		//" -nodesktop -nosplash -nodisplay " +
-		    		"-r " + inputScriptName.replace(".m", "") + " -logfile " + outputFileName);
-		    
-		    final Process proc = rt.exec(new String[] { matlabexe,
-		    		//"-nodesktop", "-nosplash", "-nodisplay",
-		    		"-r", inputScriptName.replace(".m", ""),
-			    "-logfile", outputFileName}, null, new File(System.getProperty("user.dir"))); 
-		    //"-nodesktop", REMOVED FOR DEBUGGING - was before "-r"
+		    String commandStr = matlabexe + " -nodesktop -nosplash -nodisplay " +
+    			"-r " + inputScriptName.replace(".m", "") + " -logfile " + outputFileName; 
 		    //older versions of matlab used /r amd /logfile
 		    
+		    System.err.println(commandStr);
+		    
+		    ProcessBuilder builder = new ProcessBuilder(commandStr);
+		    builder.redirectErrorStream(true);
+		    Process proc = builder.start();
+		    		    
 		    //The following lines make sure the Java app waits for the program to finish
-		    final InputStream stderr = proc.getErrorStream();
-		    final InputStreamReader isr = new InputStreamReader(stderr);
+		    final InputStream stdout = proc.getInputStream();
+		    final InputStreamReader isr = new InputStreamReader(stdout);
 		    final BufferedReader br = new BufferedReader(isr);
 		    String line = null;
 	
