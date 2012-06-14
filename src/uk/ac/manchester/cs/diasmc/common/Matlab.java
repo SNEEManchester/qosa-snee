@@ -56,7 +56,7 @@ public class Matlab {
 		    String matlabexe = LocalSettings.getMatlabExe();
 		    
 		    System.err.println(matlabexe +
-		    		//" -nodesktop -nosplash -nodisplay " +
+		    		" -nodesktop -nosplash -nodisplay " +
 		    		"-r " + inputScriptName.replace(".m", "") + " -logfile " + outputFileName);
 		    
 		    final Process proc = rt.exec(new String[] { matlabexe,
