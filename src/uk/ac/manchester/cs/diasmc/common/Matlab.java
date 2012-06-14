@@ -73,8 +73,9 @@ public class Matlab {
 		    while ((line = br.readLine()) != null) {
 		    }
 		    final int exitVal = proc.waitFor();
-		} catch (final Throwable t) {
-		    Utils.handleCriticalException(new Exception("Unable to invoke solver"));
+		} catch (Exception e) {
+			System.err.println("Unable to invoke solver");
+		    Utils.handleCriticalException(e);
 		}
     }
 	
