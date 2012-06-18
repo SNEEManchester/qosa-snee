@@ -1,6 +1,8 @@
 #!/usr/bin/python
 #This script assumes that gnuplot is in the environment PATH
 import getopt, logging, sys, SneeqlLib, os, UtilLib, checkTupleCount, RandomSeeder, networkLib, StatLib, GraphData, CSVLib
+from datetime import datetime
+from datetime import timedelta
 
 SneeqlLib.optCompileSneeql = True
 
@@ -221,13 +223,17 @@ def runSneeql(runAttr, runAttrCols, qosa, qos, scenarioDir, outputDir):
 	scenarioParams = ["-schema-file="+schemaFile, "-query="+queryFile, "-network-topology-file="+networkFile, "-output-root-dir="+UtilLib.winpath(queryPlanOutputDir)]
 	
 	#compile the query for using the SNEEql optimizer
-	queryCompilerParams = coreParams + scenarioParams	
+	queryCompilerParams = coreParams + scenarioParams
+	tstart = datetime.now()	
 	exitVal = SneeqlLib.compileQueryParamStr(queryCompilerParams, runAttr['queryId'])
+	tend = datetime.now()
+	compilationTime = tend - tstart
 
-	tmpRunAttrCols = runAttrCols + ['qosa', 'optgoal', 'exitCode']
+	tmpRunAttrCols = runAttrCols + ['qosa', 'optgoal', 'exitCode', 'compilationTime']
 	runAttr['qosa'] = qosa
 	runAttr['optgoal'] = qos
 	runAttr['exitCode'] = exitVal
+	runAttr['compilationTime'] = compilationTime.total_seconds()
 
 	if exitVal==0:
 		(runAttr, tmpRunAttrCols) = getModelQoSMetrics(queryPlanOutputDir, runAttr, tmpRunAttrCols)
