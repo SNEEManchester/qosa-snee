@@ -16,8 +16,7 @@ optRoutingTreesToKeep = 5
 
 #TESTING
 #optValidScenarioList = range(0,30)
-#optValidScenarioList = [0]
-optValidScenarioList = [5, 8, 12, 14, 17, 19, 25, 26, 27]
+optValidScenarioList = [1,3,4,5,7,9,11,13,14,15,18,19,20,22,23,24,25,26,28,29]
 
 #for QoSA-SNEE with 30 nodes 
 #not working: 8, 25 (used to work for thesis)
@@ -36,7 +35,7 @@ optQoSA = ['all']
 
 #For 100 node scenarios
 #qosaQoSSpec = ["101", "102", "103", "104", "105", "106", "107", "108", "109", "110"]
-#qosaQoSSpec = ["105"]
+#qosaQoSSpec = ["101"]
 qosaQoSSpec = ["102", "103", "104", "105", "106", "107", "108", "109", "110"]
 
 #FG-SNEE QoS, list of pairs [alpha, delta upper bound] - both in seconds
