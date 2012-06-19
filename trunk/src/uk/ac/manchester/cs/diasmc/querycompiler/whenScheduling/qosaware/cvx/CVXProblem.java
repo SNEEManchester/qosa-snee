@@ -163,6 +163,35 @@ public class CVXProblem {
 		return clone;
 	}
 
+	public static boolean constraintListValid(ArrayList<CVXConstraint> constraints) {
+		Iterator<CVXConstraint> cstrIter = constraints.iterator();
+		while (cstrIter.hasNext()) {
+		    CVXConstraint cstr = cstrIter.next();
+		    if (!cstr.isValid()) {
+		    	return false;
+		    }
+		}
+		return true;
+	}
+	
+	public boolean isValid() {
+		if (this.optimizationGoal != null) {
+			Iterator<AlphaBetaExpression> exprIter = this.optimizationGoal.iterator();
+			while (exprIter.hasNext()) {
+				AlphaBetaExpression expr = exprIter.next();
+				if (!expr.isValid())
+					return false;
+			}
+		}
+		if (!constraintListValid(this.derivedConstraints))
+			return false;
+		if (!constraintListValid(this.consistencyConditions))
+			return false;
+		if (!constraintListValid(this.integerConstraints))
+			return false;
+		return true;
+	}
+	
     
     @Override
 	public final String toString() {

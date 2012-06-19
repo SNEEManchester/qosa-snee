@@ -83,4 +83,16 @@ public class CVXConstraint {
 	this.comment = comment;
     }
 
+	public boolean isValid() {
+	    AlphaBetaExpression leftExpr = this.leftExpr;
+	    if (!leftExpr.isValid()) {
+	    	return false;
+	    }
+	    AlphaBetaExpression rightExpr = this.rightExpr;
+	    if (!rightExpr.isValid()) {
+	    	return false;
+	    }
+		return true;
+	}
+
 }

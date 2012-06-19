@@ -35,6 +35,6 @@ package uk.ac.manchester.cs.diasmc.querycompiler.whenScheduling.qosaware.cvx;
 
 public enum CVXSolutionStatus {
 
-    SOLVED, INFEASIBLE, UNBOUNDED
+    SOLVED, INFEASIBLE, UNBOUNDED, INVALID
 
 }
