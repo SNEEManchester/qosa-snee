@@ -164,6 +164,8 @@ public class CVXProblem {
 		clone.piString = this.piString;
 		clone.epsilonString = this.epsilonString;
 		clone.lambda_1 = (ArrayList<AlphaBetaExpression>)this.lambda_1.clone();
+		clone.epsilon = this.epsilon;
+		clone.pi = this.pi;
 		return clone;
 	}
 
