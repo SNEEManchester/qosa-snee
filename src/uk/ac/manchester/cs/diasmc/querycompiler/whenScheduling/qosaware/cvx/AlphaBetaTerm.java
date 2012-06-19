@@ -608,4 +608,16 @@ public class AlphaBetaTerm {
 	    System.out.println(numb+" "+rptNumb+"\n");
 	}
 
+	public double getCoefficient() {
+		return this.numerator/this.denominator;
+	}
+
+	public boolean hasValidCoefficient() {
+		double coeff = this.getCoefficient();
+		if (coeff == Double.NaN || coeff == Double.NEGATIVE_INFINITY || coeff == Double.POSITIVE_INFINITY) {
+			return false;
+		}
+		return true;
+	}
+	
 } 

@@ -92,6 +92,10 @@ public class CVXSolver {
 		    Iterator<CVXProblem> problemIter = problemList.iterator();
 		    while (problemIter.hasNext()) {
 		    	CVXProblem problem = problemIter.next();
+		    	if (!problem.isValid()) {
+		    		out.println("if 0");
+		    	}
+	    		
 			    out.println(problem.toString());
 			    out.println("cvx_optval");
 			    out.println("alpha");
@@ -99,6 +103,12 @@ public class CVXSolver {
 			    out.println(problem.getPiString());
 			    out.println(problem.getEpsilonString());
 			    out.println(problem.getLambda_1String());
+			    
+			    
+			    if (!problem.isValid()) {
+			    	out.println("end");
+		    		out.println("disp('Status: Invalid')");
+		    	}
 		    }
 		    out.println("exit");
 		    out.close();		    
@@ -140,6 +150,11 @@ public class CVXSolver {
 				    continue;
 				} else if (line.contains("Status: Infeasible") || line.contains("Status: Inaccurate/Infeasible")) {
 				    _status = CVXSolutionStatus.INFEASIBLE;
+				    CVXSolution solution = new CVXSolution(_status);
+				    solutionList.add(solution);				    
+				    continue;
+				} else if (line.contains("Status: Invalid")) {
+					_status = CVXSolutionStatus.INVALID;
 				    CVXSolution solution = new CVXSolution(_status);
 				    solutionList.add(solution);				    
 				    continue;

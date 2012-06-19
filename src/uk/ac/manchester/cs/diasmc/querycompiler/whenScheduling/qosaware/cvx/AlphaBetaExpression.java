@@ -825,6 +825,23 @@ public final class AlphaBetaExpression {
 		return true;		
 	}
 	
+
+	/** Checks whether expression is valid; i.e., coefficients musnt be NaN or Infinity
+	 * 
+	 * @return
+	 */
+	public boolean isValid() {
+Iterator<AlphaBetaTerm> termsIter = termsCollection.iterator();
+		
+		while (termsIter.hasNext()) {
+			AlphaBetaTerm term = termsIter.next();
+			if (!term.hasValidCoefficient()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	
 	/**
 	 * Testing function.
