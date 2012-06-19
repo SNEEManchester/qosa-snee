@@ -164,7 +164,7 @@ public class QWhenScheduling {
     	//populate global hash table with this information for later use
 		AlphaBetaExpression allSitesEnergyConsumption = computeAllSiteEnergyConsumption(daf, costExpressions, cvxDebug); 
 		AlphaBetaExpression allSitesPowerConsumption = computePowerConsumption(allSitesEnergyConsumption);
-	
+		
 		/**
 		 * Optimization goal
 		 */
@@ -174,7 +174,8 @@ public class QWhenScheduling {
 		//Instantiate CVX problem with the optimization type/goal
 		//If null, this is a feasibility problem rather than an optimization problem
 		final CVXProblem problem = new CVXProblem(optType, optExpr);		
-	
+		problem.setEpsilon(allSitesEnergyConsumption);
+		
 		/**
 		 * Add QoS Constraints
 		 */

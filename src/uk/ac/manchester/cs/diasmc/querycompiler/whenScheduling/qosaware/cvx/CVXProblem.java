@@ -67,6 +67,10 @@ public class CVXProblem {
     String epsilonString = "";
     
     ArrayList<AlphaBetaExpression> lambda_1;
+
+	private AlphaBetaExpression epsilon;
+
+	private AlphaBetaExpression pi;
     
 	public static int MAX_SUB_PROBLEMS = 31;
     
@@ -188,6 +192,10 @@ public class CVXProblem {
 		if (!constraintListValid(this.consistencyConditions))
 			return false;
 		if (!constraintListValid(this.integerConstraints))
+			return false;
+		if (!this.epsilon.isValid())
+			return false;
+		if (!this.pi.isValid())
 			return false;
 		return true;
 	}
@@ -406,6 +414,7 @@ public class CVXProblem {
 	}
 
 	public void setPi(AlphaBetaExpression pi) {
+		this.pi = pi;
 		this.piString = "pi = "+pi.toString();
 	}
 	
@@ -457,5 +466,9 @@ public class CVXProblem {
     	strBuff.append("lambda_days = (lambda_ms / 86400000)");
 		
     	return strBuff.toString();
+	}
+
+	public void setEpsilon(AlphaBetaExpression allSitesEnergyConsumption) {
+		this.epsilon = allSitesEnergyConsumption;
 	}
 }
