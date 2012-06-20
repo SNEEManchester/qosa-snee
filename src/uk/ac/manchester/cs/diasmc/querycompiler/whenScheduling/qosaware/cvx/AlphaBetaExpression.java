@@ -835,7 +835,7 @@ Iterator<AlphaBetaTerm> termsIter = termsCollection.iterator();
 		
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
-			if (!term.hasValidCoefficient()) {
+			if (!term.isValid()) {
 				return false;
 			}
 		}
