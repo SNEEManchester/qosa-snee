@@ -333,7 +333,7 @@ public class QWhenScheduling {
 		AlphaBetaExpression pi = computePi(daf);
 		CVXConstraint constraint = new CVXConstraint(AlphaBetaExpression.ALPHA(),
 				CVXOperator.GREATER_EQUALS, pi,
-				"Acquisition interval <= duration of tasks in last epoch");
+				"Acquisition interval >= duration of tasks in last epoch");
 		problem.addDerivedConstraint(constraint);
 		problem.setPi(pi);
 	
