@@ -612,9 +612,15 @@ public class AlphaBetaTerm {
 		return this.numerator/this.denominator;
 	}
 
-	public boolean hasValidCoefficient() {
+	public boolean isValid() {
 		double coeff = this.getCoefficient();
-		if (coeff == Double.NaN || coeff == Double.NEGATIVE_INFINITY || coeff == Double.POSITIVE_INFINITY) {
+		if (Double.isNaN(coeff) || coeff == Double.NEGATIVE_INFINITY || coeff == Double.POSITIVE_INFINITY) {
+			return false;
+		}
+		if (Double.isNaN(this.alphaExponent) || this.alphaExponent == Double.NEGATIVE_INFINITY || this.alphaExponent == Double.POSITIVE_INFINITY) {
+			return false;
+		}
+		if (Double.isNaN(this.betaExponent) || this.betaExponent == Double.NEGATIVE_INFINITY || this.betaExponent == Double.POSITIVE_INFINITY) {
 			return false;
 		}
 		return true;
