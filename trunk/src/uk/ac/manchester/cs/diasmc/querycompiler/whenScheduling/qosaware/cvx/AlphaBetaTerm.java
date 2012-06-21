@@ -614,15 +614,19 @@ public class AlphaBetaTerm {
 
 	public boolean isValid() {
 		double coeff = this.getCoefficient();
+		System.err.println("checking: "+this.toCVXString());
 		if (Double.isNaN(coeff) || Double.isInfinite(coeff)) {
 			return false;
 		}
+		System.err.println("coefficient ok");
 		if (Double.isNaN(this.alphaExponent) || Double.isInfinite(this.alphaExponent)) {
 			return false;
 		}
+		System.err.println("alpha exp ok");
 		if (Double.isNaN(this.betaExponent) || Double.isInfinite(this.betaExponent)) {
 			return false;
 		}
+		System.err.println("beta exp ok\n");
 		return true;
 	}
 	
