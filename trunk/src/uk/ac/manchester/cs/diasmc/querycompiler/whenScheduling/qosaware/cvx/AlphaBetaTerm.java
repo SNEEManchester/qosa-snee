@@ -614,13 +614,13 @@ public class AlphaBetaTerm {
 
 	public boolean isValid() {
 		double coeff = this.getCoefficient();
-		if (Double.isNaN(coeff) || coeff == Double.NEGATIVE_INFINITY || coeff == Double.POSITIVE_INFINITY) {
+		if (Double.isNaN(coeff) || Double.isInfinite(coeff)) {
 			return false;
 		}
-		if (Double.isNaN(this.alphaExponent) || this.alphaExponent == Double.NEGATIVE_INFINITY || this.alphaExponent == Double.POSITIVE_INFINITY) {
+		if (Double.isNaN(this.alphaExponent) || Double.isInfinite(this.alphaExponent)) {
 			return false;
 		}
-		if (Double.isNaN(this.betaExponent) || this.betaExponent == Double.NEGATIVE_INFINITY || this.betaExponent == Double.POSITIVE_INFINITY) {
+		if (Double.isNaN(this.betaExponent) || Double.isInfinite(this.betaExponent)) {
 			return false;
 		}
 		return true;
