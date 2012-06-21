@@ -181,6 +181,7 @@ public class CVXProblem {
 	}
 	
 	public boolean isValid() {
+		System.err.println("Checking optimization goal...");
 		if (this.optimizationGoal != null) {
 			Iterator<AlphaBetaExpression> exprIter = this.optimizationGoal.iterator();
 			while (exprIter.hasNext()) {
@@ -189,14 +190,19 @@ public class CVXProblem {
 					return false;
 			}
 		}
+		System.err.println("Checking derived constraints...");
 		if (!constraintListValid(this.derivedConstraints))
 			return false;
+		System.err.println("Checking consistency conditions...");
 		if (!constraintListValid(this.consistencyConditions))
 			return false;
+		System.err.println("Checking integer constraints...");
 		if (!constraintListValid(this.integerConstraints))
 			return false;
+		System.err.println("Checking epsilon...");
 		if (!this.epsilon.isValid())
 			return false;
+		System.err.println("Checking pi...");
 		if (!this.pi.isValid())
 			return false;
 		return true;
