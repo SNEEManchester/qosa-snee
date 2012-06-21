@@ -833,6 +833,7 @@ public final class AlphaBetaExpression {
 	public boolean isValid() {
 Iterator<AlphaBetaTerm> termsIter = termsCollection.iterator();
 		
+		System.err.println("checking ABexpr: "+this.toString());
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (!term.isValid()) {
