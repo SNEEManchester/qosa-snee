@@ -173,8 +173,7 @@ public class QWhenScheduling {
 
 		//Instantiate CVX problem with the optimization type/goal
 		//If null, this is a feasibility problem rather than an optimization problem
-		final CVXProblem problem = new CVXProblem(optType, optExpr);		
-		problem.setEpsilon(allSitesEnergyConsumption);
+		final CVXProblem problem = new CVXProblem(optType, optExpr);
 		
 		/**
 		 * Add QoS Constraints
@@ -450,6 +449,7 @@ public class QWhenScheduling {
 		AlphaBetaExpression sixMonthEpsilon = AlphaBetaExpression.multiplyBy(
 				allSitesPowerConsumption,
 				new Double("15778463").doubleValue());
+		problem.setEpsilon(sixMonthEpsilon);
 		problem.setEpsilonString(sixMonthEpsilon);
 	}
 

@@ -476,7 +476,7 @@ public class CVXProblem {
     	return strBuff.toString();
 	}
 
-	public void setEpsilon(AlphaBetaExpression allSitesEnergyConsumption) {
-		this.epsilon = allSitesEnergyConsumption;
+	public void setEpsilon(AlphaBetaExpression _epsilon) {
+		this.epsilon = _epsilon;
 	}
 }
