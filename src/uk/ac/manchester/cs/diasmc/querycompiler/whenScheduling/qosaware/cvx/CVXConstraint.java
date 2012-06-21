@@ -84,6 +84,7 @@ public class CVXConstraint {
     }
 
 	public boolean isValid() {
+		System.err.println("*** checking contraint: "+this.toString());
 	    AlphaBetaExpression leftExpr = this.leftExpr;
 	    if (!leftExpr.isValid()) {
 	    	return false;
