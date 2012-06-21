@@ -456,9 +456,8 @@ public class AlphaBetaTerm {
 		}
 		
 		//Coefficient (as decimal)
-		if (!(this.numerator == this.denominator && 
-				(this.alphaExponent != 0 || this.betaExponent != 0))) {
-			String coeffStr = prettyPrint(this.numerator / this.denominator);
+		if (this.getCoefficient() != 1) {
+			String coeffStr = prettyPrint(this.getCoefficient());
 			sb.append(coeffStr);
 			
 			if (this.alphaExponent != 0 || this.betaExponent != 0) {
