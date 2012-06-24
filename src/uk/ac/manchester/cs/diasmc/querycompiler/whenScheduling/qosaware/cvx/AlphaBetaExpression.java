@@ -725,7 +725,7 @@ public final class AlphaBetaExpression {
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (term.getAlphaExponent()==0 && term.getBetaExponent()==0) {
-				return term.getNumerator() / term.getDenominator();
+				return term.getCoefficient();
 			}
 		}
 		
@@ -743,7 +743,7 @@ public final class AlphaBetaExpression {
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (term.getAlphaExponent()==1 && term.getBetaExponent()==0) {
-				return term.getNumerator() / term.getDenominator();
+				return term.getCoefficient();
 			}
 		}
 		
@@ -761,7 +761,7 @@ public final class AlphaBetaExpression {
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (term.getAlphaExponent()==0 && term.getBetaExponent()==1) {
-				return term.getNumerator() / term.getDenominator();
+				return term.getCoefficient();
 			}
 		}
 		
@@ -778,7 +778,7 @@ public final class AlphaBetaExpression {
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (term.getAlphaExponent()==0 && term.getBetaExponent()==2) {
-				return term.getNumerator() / term.getDenominator();
+				return term.getCoefficient();
 			}
 		}
 		
@@ -796,7 +796,7 @@ public final class AlphaBetaExpression {
 		while (termsIter.hasNext()) {
 			AlphaBetaTerm term = termsIter.next();
 			if (term.getAlphaExponent()==1 && term.getBetaExponent()==1) {
-				return term.getNumerator() / term.getDenominator();
+				return term.getCoefficient();
 			}
 		}
 		
