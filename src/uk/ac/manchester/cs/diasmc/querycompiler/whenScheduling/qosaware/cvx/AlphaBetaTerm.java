@@ -127,7 +127,9 @@ public class AlphaBetaTerm {
 		} else {
 			this.numerator = ((this.numerator * term.denominator) 
 					+ (term.numerator * this.denominator));
-			this.denominator = this.denominator * term.denominator;		
+			this.denominator = this.denominator * term.denominator;	
+			System.err.println("numerator="+numerator);
+			System.err.println("denominator="+denominator);			
 		}
 	}
 	
