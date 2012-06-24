@@ -120,6 +120,12 @@ public class QWhenScheduling {
 			//if (site!=daf.getRoutingTree().getRoot()) {
 			//	System.err.println(site.getID()+" - "+siteEnergyCost.toString());
 				allSitesEnergyConsumption.add(siteEnergyCost);
+				System.err.println("cumulative allSitesEnergyConsumption: "+allSitesEnergyConsumption.toString());
+				if (!allSitesEnergyConsumption.isValid()) {
+					System.err.println("INVALID expression");
+					System.exit(5);
+				}
+				
 			//	System.err.println(site.getID()+" - "+siteEnergyCost.toString());
 			//}
 		}
