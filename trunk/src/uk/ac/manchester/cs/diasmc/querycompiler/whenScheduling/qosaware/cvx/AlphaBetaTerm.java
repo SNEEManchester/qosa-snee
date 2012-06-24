@@ -43,10 +43,8 @@ import java.text.DecimalFormat;
  */
 public class AlphaBetaTerm {
 
-	/** Numerator part of the coefficient. */
-	private double numerator;
-	/** Denominator part of the coefficient. */
-	private double denominator;
+	/** Coefficient */
+	private double coefficient;
 	/** Exponent of Alpha. */
 	private double alphaExponent; 
 	/** Exponent of Beta. */
@@ -84,8 +82,7 @@ public class AlphaBetaTerm {
 			final double theDenominator, final double theAlphaExponent,
 			final double theBetaExponent) {
 		assert (theDenominator != 0);
-		numerator = theNumerator;
-		denominator = theDenominator;
+		coefficient = (theNumerator/theDenominator);
 		alphaExponent = theAlphaExponent;
 		betaExponent = theBetaExponent;
 	}
@@ -95,7 +92,7 @@ public class AlphaBetaTerm {
 	 * @return A deep copy of this term.
 	 */
 	public final AlphaBetaTerm clone() {
-		return new AlphaBetaTerm(numerator, denominator, 
+		return new AlphaBetaTerm(coefficient, 
 			alphaExponent, betaExponent);
 	}
 	/**
@@ -107,11 +104,7 @@ public class AlphaBetaTerm {
 	protected final void add(final double constant) {
 		assert (alphaExponent == 0);
 		assert (betaExponent == 0);
-		if (this.denominator == 1) {
-			numerator += constant;
-		} else {
-			this.numerator += (constant * this.denominator);
-		}
+		this.coefficient += constant;
 	}
 	
 	/**
@@ -122,15 +115,7 @@ public class AlphaBetaTerm {
 	protected final void add(final AlphaBetaTerm term) {
 		assert (this.alphaExponent == term.alphaExponent);
 		assert (this.betaExponent == term.betaExponent);
-		if (this.denominator == term.denominator) {
-			numerator += term.numerator;
-		} else {
-			this.numerator = ((this.numerator * term.denominator) 
-					+ (term.numerator * this.denominator));
-			this.denominator = this.denominator * term.denominator;	
-			System.err.println("numerator="+numerator);
-			System.err.println("denominator="+denominator);			
-		}
+		this.coefficient += term.coefficient;
 	}
 	
 	/**
@@ -144,13 +129,7 @@ public class AlphaBetaTerm {
 			final AlphaBetaTerm second) {
 		assert (first.alphaExponent == second.alphaExponent);
 		assert (first.betaExponent == second.betaExponent);
-		if (first.denominator == second.denominator) {
-			return new AlphaBetaTerm(first.numerator + second.numerator, 
-				first.denominator, first.alphaExponent, first.betaExponent);
-		}
-		return new AlphaBetaTerm(first.numerator
-			+ (first.numerator / first.denominator * second.numerator),
-			first.denominator, first.alphaExponent, first.betaExponent);
+		return new AlphaBetaTerm(first.coefficient + second.coefficient, first.alphaExponent, first.betaExponent);
 	}
 
 	/**
@@ -164,13 +143,7 @@ public class AlphaBetaTerm {
 			final AlphaBetaTerm second) {
 		assert (first.alphaExponent == second.alphaExponent);
 		assert (first.betaExponent == second.betaExponent);
-		if (first.denominator == second.denominator) {
-			return new AlphaBetaTerm(first.numerator - second.numerator, 
-				first.denominator, first.alphaExponent, first.betaExponent);
-		}
-		return new AlphaBetaTerm(first.numerator
-			- (first.numerator / first.denominator * second.numerator),
-			first.denominator, first.alphaExponent, first.betaExponent);
+		return new AlphaBetaTerm(first.coefficient + second.coefficient, first.alphaExponent, first.betaExponent);
 	}
 
 	/**
@@ -179,7 +152,7 @@ public class AlphaBetaTerm {
 	 * @return negative term.
 	 */
 	protected final AlphaBetaTerm getNegative() {
-		return new AlphaBetaTerm(-this.numerator, this.denominator,
+		return new AlphaBetaTerm(-this.coefficient,
 				this.alphaExponent, this.betaExponent);
 	}
 	
@@ -190,11 +163,9 @@ public class AlphaBetaTerm {
 	 * @param constant Value to be subtracted.
 	 */
 	protected final void subtract(final double constant) {
-		if (this.denominator == 1) {
-			numerator -= constant;
-		} else {
-			this.numerator -= (constant * this.denominator);
-		}
+		assert (alphaExponent == 0);
+		assert (betaExponent == 0);
+		this.coefficient -= constant;
 	}
 	
 	/**
@@ -205,13 +176,7 @@ public class AlphaBetaTerm {
 	protected final void subtract(final AlphaBetaTerm term) {
 		assert (this.alphaExponent == term.alphaExponent);
 		assert (this.betaExponent == term.betaExponent);
-		//term.denominator known to be not zero;
-		if (this.denominator == term.denominator) {
-			numerator -= term.numerator;
-		} else {
-			this.numerator -= 
-				(term.numerator / term.denominator * this.numerator);
-		}
+		this.coefficient -= term.coefficient;
 	}
 
 	/**
@@ -219,7 +184,7 @@ public class AlphaBetaTerm {
 	 * @param constant Value that this term is to be multiplied by.
 	 */
 	protected final void multiplyBy(final double constant) {
-		numerator = numerator * constant;
+		this.coefficient *= constant;
 	}
 	
 	/**
@@ -227,8 +192,7 @@ public class AlphaBetaTerm {
 	 * @param term Term to multiply this term with.
 	 */
 	protected final void multiplyBy(final AlphaBetaTerm term) {
-		this.numerator = this.numerator * term.numerator;
-		this.denominator = this.denominator * term.denominator;
+		this.coefficient *= term.coefficient;
 		this.alphaExponent = this.alphaExponent + term.alphaExponent;
 		this.betaExponent = this.betaExponent + term.betaExponent;
 	}
@@ -242,8 +206,8 @@ public class AlphaBetaTerm {
 	 */
 	protected static AlphaBetaTerm multiplyBy(final AlphaBetaTerm first, 
 			final double second) {
-		return new AlphaBetaTerm(first.numerator * second, 
-			first.denominator, first.alphaExponent,	first.betaExponent);
+		return new AlphaBetaTerm(first.coefficient * second, 
+			first.alphaExponent,	first.betaExponent);
 	} 
 
 	/**
@@ -255,8 +219,7 @@ public class AlphaBetaTerm {
 	 */
 	protected static AlphaBetaTerm multiplyBy(final AlphaBetaTerm first, 
 			final AlphaBetaTerm second) {
-		return new AlphaBetaTerm(first.numerator * second.numerator, 
-			first.denominator * second.denominator,
+		return new AlphaBetaTerm(first.coefficient * second.coefficient, 
 			first.alphaExponent + second.alphaExponent,
 			first.betaExponent + second.betaExponent);
 	} 
@@ -270,8 +233,7 @@ public class AlphaBetaTerm {
 	 */
 	public static AlphaBetaTerm divideBy(final AlphaBetaTerm first, 
 			final double second) {
-		return new AlphaBetaTerm(first.numerator, 
-			first.denominator * second,
+		return new AlphaBetaTerm(first.coefficient / second, 
 			first.alphaExponent, first.betaExponent);
 	} 
 
@@ -284,8 +246,7 @@ public class AlphaBetaTerm {
 	 */
 	protected static AlphaBetaTerm divideBy(final AlphaBetaTerm first, 
 			final AlphaBetaTerm second) {
-		return new AlphaBetaTerm(first.numerator * second.denominator, 
-			first.denominator * second.numerator,
+		return new AlphaBetaTerm(first.coefficient / second.coefficient,
 			first.alphaExponent - second.alphaExponent,
 			first.betaExponent - second.betaExponent);
 	} 
@@ -297,53 +258,35 @@ public class AlphaBetaTerm {
 	 */
 	public final void divideBy(final double constant) {
 		assert (constant != 0);
-		this.denominator = this.denominator * constant;
+		this.coefficient /= constant;
 	}
 	
 	/**
 	 * Divide this term by another term.  Stores the result in this term.
-	 * Only valid if term != 0 (specifically, if numerator != 0)
+	 * Only valid if other term != 0 
 	 * @param term Term that this term is to be divided by.
 	 */
 	protected final void divideBy(final AlphaBetaTerm term) {
-		assert (this.numerator != 0);
-		this.numerator = this.numerator * term.denominator;
-		this.denominator = this.denominator * term.numerator;
+		assert (term.coefficient != 0);
+		this.coefficient /= term.coefficient;
 		this.alphaExponent = this.alphaExponent - term .alphaExponent;
 		this.betaExponent = this.betaExponent - term.betaExponent;
 	}
 	
-	/** 
-	 * Getter.
-	 * @return Numerator part of term.
-	 */
-	protected final double getNumerator() {
-		return numerator;
-	}
-	
-	//CB Not sure we should allow setters.
 	/**
-	 * Setter.
-	 * @param theNumerator New Numerator value.
+	 * Getter
+	 * @return
 	 */
-	protected final void setNumerator(final double theNumerator) {
-		this.numerator = theNumerator;
+	public double getCoefficient() {
+		return this.coefficient;
 	}
-	
+
 	/**
-	 * Getter.
-	 * @return The denominator part of the term.
+	 * Setter
+	 * @return
 	 */
-	protected final double getDenominator() {
-		return denominator;
-	}
-	
-	/**
-	 * Setter.
-	 * @param theDenominator New denominator value. 
-	 */
-	protected final void setDenominator(final double theDenominator) {
-		this.denominator = theDenominator;
+	public void setCoefficient(double coeff) {
+		this.coefficient = coeff;
 	}
 	
 	/**
@@ -380,16 +323,10 @@ public class AlphaBetaTerm {
 	
 	/**
 	 * Check to see if the term is negative.
-	 * @return True If either denominator or numerator 
-	 * (but not both) is smaller than zero 
-	 * and therefore the term is negative.
+	 * @return 
 	 */
 	protected final boolean hasNegativeCoeffcient() {
-		if (this.denominator < 0) {
-			return (this.numerator > 0);
-		} else {
-			return (this.numerator < 0);
-		}
+		return (this.coefficient < 0);
 	}
 	
 	/**
@@ -411,7 +348,7 @@ public class AlphaBetaTerm {
 	 * and therefore the term is negative.
 	 */
 	protected final boolean isZero() {
-		return (this.numerator == 0);
+		return (this.coefficient == 0);
 	}
 		
 	/**
@@ -453,7 +390,7 @@ public class AlphaBetaTerm {
 	protected final String toCVXString() {
 		StringBuffer sb = new StringBuffer();
 		
-		if (this.numerator == 0) {
+		if (this.coefficient == 0) {
 			return "";
 		}
 		
@@ -500,65 +437,66 @@ public class AlphaBetaTerm {
 	 * @return the string representation in latex format.
 	*/
 	private String toLatexString(final boolean coeffAsDecimal) {
-		StringBuffer numeratorSB = new StringBuffer();
-		StringBuffer denominatorSB = new StringBuffer();
-
-		if (this.numerator == 0) {
-			return "";  //If you want zero terms to be displayed return "0" instead of empty string here
-		}
-		
-		//Coefficient
-		if (!(this.numerator == this.denominator && 
-				(this.alphaExponent != 0 || this.betaExponent != 0))) {
-			//Coefficient as decimal
-			if (coeffAsDecimal) {
-				numeratorSB.append(prettyPrint(this.numerator / this.denominator));
-			} else { //Coefficient as fraction	
-				numeratorSB.append(prettyPrint(this.numerator));
-				if (this.denominator != 1) {
-					denominatorSB.append(prettyPrint(this.denominator));
-				}
-			}		
-		}				
-		
-		//Alpha part of the term
-		if (this.alphaExponent != 0) {
-			String alphaExpStr = "";
-			if (Math.abs(this.alphaExponent) != 1) {
-				alphaExpStr = "^{" 
-					+ prettyPrint(Math.abs(this.alphaExponent)) + "}";
-			}
-			if (this.alphaExponent > 0) {
-				numeratorSB.append("\\alpha" + alphaExpStr);
-			} else {
-				denominatorSB.append("\\alpha" + alphaExpStr);
-			}
-		}
-
-		//Beta part of the term
-		if (this.betaExponent != 0) {
-			String betaExpStr = "";
-			if (Math.abs(this.betaExponent) != 1) {
-				betaExpStr = "^{" 
-					+ prettyPrint(Math.abs(this.betaExponent)) + "}";
-			}
-			if (this.betaExponent > 0) {
-				numeratorSB.append("\\beta" + betaExpStr);
-			} else {
-				denominatorSB.append("\\beta" + betaExpStr);
-			}
-		}
+//		StringBuffer numeratorSB = new StringBuffer();
+//		StringBuffer denominatorSB = new StringBuffer();
+//
+//		if (this.coefficient == 0) {
+//			return "";  //If you want zero terms to be displayed return "0" instead of empty string here
+//		}
+//		
+//		//Coefficient
+//		
+//		if (!(this.numerator == this.denominator && 
+//				(this.alphaExponent != 0 || this.betaExponent != 0))) {
+//			//Coefficient as decimal
+//			if (coeffAsDecimal) {
+//				numeratorSB.append(prettyPrint(this.numerator / this.denominator));
+//			} else { //Coefficient as fraction	
+//				numeratorSB.append(prettyPrint(this.numerator));
+//				if (this.denominator != 1) {
+//					denominatorSB.append(prettyPrint(this.denominator));
+//				}
+//			}		
+//		}				
+//		
+//		//Alpha part of the term
+//		if (this.alphaExponent != 0) {
+//			String alphaExpStr = "";
+//			if (Math.abs(this.alphaExponent) != 1) {
+//				alphaExpStr = "^{" 
+//					+ prettyPrint(Math.abs(this.alphaExponent)) + "}";
+//			}
+//			if (this.alphaExponent > 0) {
+//				numeratorSB.append("\\alpha" + alphaExpStr);
+//			} else {
+//				denominatorSB.append("\\alpha" + alphaExpStr);
+//			}
+//		}
+//
+//		//Beta part of the term
+//		if (this.betaExponent != 0) {
+//			String betaExpStr = "";
+//			if (Math.abs(this.betaExponent) != 1) {
+//				betaExpStr = "^{" 
+//					+ prettyPrint(Math.abs(this.betaExponent)) + "}";
+//			}
+//			if (this.betaExponent > 0) {
+//				numeratorSB.append("\\beta" + betaExpStr);
+//			} else {
+//				denominatorSB.append("\\beta" + betaExpStr);
+//			}
+//		}
 		
 		StringBuffer sb = new StringBuffer();
-		if (denominatorSB.length() == 0) {
-			sb.append(numeratorSB);
-		} else {
-			sb.append("\\frac{");
-			sb.append(numeratorSB);
-			sb.append("}{");
-			sb.append(denominatorSB);
-			sb.append("}");	
-		}
+//		if (denominatorSB.length() == 0) {
+//			sb.append(numeratorSB);
+//		} else {
+//			sb.append("\\frac{");
+//			sb.append(numeratorSB);
+//			sb.append("}{");
+//			sb.append(denominatorSB);
+//			sb.append("}");	
+//		}
 		
 		return sb.toString();		
 	}
@@ -590,7 +528,7 @@ public class AlphaBetaTerm {
 	 * @return The result of evaluating the term
 	 */
 	protected final double evaluate(double alpha, double beta) {
-		return (this.numerator / this.denominator) * 
+		return (this.coefficient) * 
 			Math.pow(alpha, this.alphaExponent) * 
 			Math.pow(beta, this.betaExponent);
 	}
@@ -610,9 +548,6 @@ public class AlphaBetaTerm {
 	    System.out.println(numb+" "+rptNumb+"\n");
 	}
 
-	public double getCoefficient() {
-		return this.numerator/this.denominator;
-	}
 
 	public boolean isValid() {
 		double coeff = this.getCoefficient();
