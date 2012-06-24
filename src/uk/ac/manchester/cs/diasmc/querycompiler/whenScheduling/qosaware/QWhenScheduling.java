@@ -101,7 +101,12 @@ public class QWhenScheduling {
 			
 			//CB The true tells cost expressions to add rounding so estimates are never under.
 			AlphaBetaExpression siteEnergyCost = costExpressions.getSiteEnergyExpression(site, true, siteDebug);
-
+			System.err.println("Site "+site.getID()+"energy: "+siteEnergyCost.toString());
+			if (!siteEnergyCost.isValid()) {
+				System.err.println("INVALID expression");
+				System.exit(5);
+			}
+			
 			//siteEnergyCost = 
 			//	AlphaBetaExpression.divideByConstant(siteEnergyCost,7.5);
 			
