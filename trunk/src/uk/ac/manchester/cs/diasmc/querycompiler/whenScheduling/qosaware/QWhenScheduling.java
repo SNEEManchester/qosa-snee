@@ -101,7 +101,7 @@ public class QWhenScheduling {
 			
 			//CB The true tells cost expressions to add rounding so estimates are never under.
 			AlphaBetaExpression siteEnergyCost = costExpressions.getSiteEnergyExpression(site, true, siteDebug);
-			System.err.println("Site "+site.getID()+"energy: "+siteEnergyCost.toString());
+			System.err.println("Site "+site.getID()+" energy: "+siteEnergyCost.toString());
 			if (!siteEnergyCost.isValid()) {
 				System.err.println("INVALID expression");
 				System.exit(5);
@@ -169,6 +169,17 @@ public class QWhenScheduling {
     	//populate global hash table with this information for later use
 		AlphaBetaExpression allSitesEnergyConsumption = computeAllSiteEnergyConsumption(daf, costExpressions, cvxDebug); 
 		AlphaBetaExpression allSitesPowerConsumption = computePowerConsumption(allSitesEnergyConsumption);
+	
+		System.err.println("All site Energy consumption: "+allSitesEnergyConsumption.toString());
+		if (!allSitesEnergyConsumption.isValid()) {
+			System.err.println("INVALID expression");
+			System.exit(5);
+		}
+		System.err.println("All site Power consumption: "+allSitesPowerConsumption.toString());
+		if (!allSitesPowerConsumption.isValid()) {
+			System.err.println("INVALID expression");
+			System.exit(5);
+		}
 		
 		/**
 		 * Optimization goal
