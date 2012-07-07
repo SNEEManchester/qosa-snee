@@ -16,7 +16,7 @@ xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk qos-specification.xsd">
 		<delivery-time>
 			<units>SECONDS</units>
 			<constraint>
-				<less-equals>15</less-equals>
+				<less-equals>90</less-equals>
 			</constraint>
 		</delivery-time>
 

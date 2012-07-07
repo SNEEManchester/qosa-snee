@@ -7,23 +7,30 @@ xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk qos-specification.xsd">
 
 	<expectations>
 
-	<optimization-goal>
-		<type>MINIMIZE</type>
-		<variable>DELIVERY_TIME</variable>
-		<weighting>1</weighting>
-	</optimization-goal>
-	
+		<optimization-goal>
+			<type>MINIMIZE</type>
+			<variable>TOTAL_ENERGY</variable>
+			<weighting>1</weighting>
+		</optimization-goal>
 	<constraints>
 		<acquisition-interval>
 			<units>SECONDS</units>
 			<constraint>
-				<equals>90</equals>
+				<equals>270</equals>
 			</constraint>
 		</acquisition-interval>	
+
+		<lifetime>
+			<units>DAYS</units>
+			<constraint>
+				<greater-equals>90</greater-equals>
+			</constraint>
+		</lifetime>
 	</constraints>
 
+
 	</expectations>
-	
+		
 	<query-duration>
 		<units>SECONDS</units>
 		<equals>60</equals>
