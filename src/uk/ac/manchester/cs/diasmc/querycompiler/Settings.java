@@ -591,7 +591,7 @@ public class Settings {
        	INPUTS_QUERY = 
        		iniFile.getStringProperty("Inputs", "query");
     	INPUTS_QOS_FILE = 
-    		iniFile.getStringProperty("Inputs", "qos_file").toLowerCase();
+    		iniFile.getStringProperty("Inputs", "qos_file");
     	INPUTS_NETWORK_TOPOLOGY_FILE = 
     		iniFile.getStringProperty("Inputs", "network_topology_file");
     	INPUTS_SITE_RESOURCE_FILE = 
