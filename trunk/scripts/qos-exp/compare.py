@@ -42,7 +42,11 @@ qosaQoSSpec = ["102", "103", "104", "105", "106", "107", "108", "109", "110"]
 
 #FG-SNEE QoS, list of pairs [alpha, delta upper bound] - both in seconds
 fgQoSSpec = ["A", "B", "C"] 
+
+#30 node scenarios
 fgQoSSpecMap = {"A" : [5, None], "B" : [15, None], "C" : [25, 100] }
+#100 node scenarios
+#fgQoSSpecMap = {"A" : [90, None], "B" : [270, None], "C" : [450, 1800] }
 
 #optExp = "tinydb" #Compare FG-SNEE to how TinyDB would behave
 optExp = "1_2" #Compare FG-SNEE to QoSA-SNEE
