@@ -17,7 +17,7 @@ xsi:schemaLocation="http://dias-mc.cs.manchester.ac.uk qos-specification.xsd">
 		<acquisition-interval>
 			<units>SECONDS</units>
 			<constraint>
-				<less-equals>45</less-equals>
+				<less-equals>270</less-equals>
 			</constraint>
 		</acquisition-interval>	
 	</constraints>	
