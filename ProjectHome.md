@@ -1,0 +1,1 @@
+Compiles SNEE declarative queries coupled with QoS expectations into in-network query plans.
