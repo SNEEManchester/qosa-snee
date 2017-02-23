@@ -441,6 +441,10 @@ public class QWhereScheduling {
 		    boolean summaryFound = false;
 		    boolean assignmentFound = false;
 		    while ((line = in.readLine()) != null) {
+		    	//ignore lines with warnings (the only appear with newer version of Matlab)
+		    	if (line.contains("[") || line.contains("]")) {
+		    		continue;
+		    	}
 		    	if (line.startsWith("*** Summary ***")) {
 		    		summaryFound = true;
 		    		continue;
